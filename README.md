@@ -15,6 +15,10 @@ Depends
 
 A python distribution such as [Enthought Python](http://www.enthought.com/products/epd.php) installs all the prerequisits. 
 
+Only tested with x64 python, but should work with x86. 
+
+Tested on Win7x64 and OSX 10.7
+
 Usage
 ==========
 - Load 'Primary Landclasses' via file menu or right-clicking the treeview
