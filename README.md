@@ -8,7 +8,7 @@ Python/QT front-end for the [Cold Regions Hydrologic Model (CRHM)](http://www.us
 
 Depends
 ==========
-- Requires Python < 3 (probably will work with limited changes)
+- Requires Python < 3 (probably will work with limited changes on 3.0+)
 - PySide & QT
 - Matplotlib
 - GDAL
