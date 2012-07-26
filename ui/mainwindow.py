@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'mainwindow.ui'
+#
+# Created: Sat Jun 16 04:08:44 2012
+#      by: pyside-uic 0.2.13 running on PySide 1.1.0
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide import QtCore, QtGui
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(872, 650)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
+        self.centralWidget = QtGui.QWidget(MainWindow)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
+        self.centralWidget.setSizePolicy(sizePolicy)
+        self.centralWidget.setObjectName("centralWidget")
+        self.gridLayout = QtGui.QGridLayout(self.centralWidget)
+        self.gridLayout.setObjectName("gridLayout")
+        MainWindow.setCentralWidget(self.centralWidget)
+        self.menuBar = QtGui.QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 872, 21))
+        self.menuBar.setObjectName("menuBar")
+        self.menuFile = QtGui.QMenu(self.menuBar)
+        self.menuFile.setObjectName("menuFile")
+        self.menuLoad_landclass = QtGui.QMenu(self.menuFile)
+        self.menuLoad_landclass.setObjectName("menuLoad_landclass")
+        self.menuTools = QtGui.QMenu(self.menuBar)
+        self.menuTools.setObjectName("menuTools")
+        MainWindow.setMenuBar(self.menuBar)
+        self.statusBar = QtGui.QStatusBar(MainWindow)
+        self.statusBar.setObjectName("statusBar")
+        MainWindow.setStatusBar(self.statusBar)
+        self.dockWidget_3 = QtGui.QDockWidget(MainWindow)
+        self.dockWidget_3.setFeatures(QtGui.QDockWidget.DockWidgetFloatable)
+        self.dockWidget_3.setObjectName("dockWidget_3")
+        self.dockWidgetContents_3 = QtGui.QWidget()
+        self.dockWidgetContents_3.setObjectName("dockWidgetContents_3")
+        self.horizontalLayout_3 = QtGui.QHBoxLayout(self.dockWidgetContents_3)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.lc_tree = QtGui.QTreeWidget(self.dockWidgetContents_3)
+        self.lc_tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.lc_tree.setObjectName("lc_tree")
+        self.horizontalLayout_3.addWidget(self.lc_tree)
+        self.dockWidget_3.setWidget(self.dockWidgetContents_3)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget_3)
+        self.actionClose = QtGui.QAction(MainWindow)
+        self.actionClose.setObjectName("actionClose")
+        self.actionGenerate_HRUs_from_selected = QtGui.QAction(MainWindow)
+        self.actionGenerate_HRUs_from_selected.setObjectName("actionGenerate_HRUs_from_selected")
+        self.actionPrimary = QtGui.QAction(MainWindow)
+        self.actionPrimary.setObjectName("actionPrimary")
+        self.actionSecondary = QtGui.QAction(MainWindow)
+        self.actionSecondary.setEnabled(False)
+        self.actionSecondary.setObjectName("actionSecondary")
+        self.actionGenerate_HRUs = QtGui.QAction(MainWindow)
+        self.actionGenerate_HRUs.setObjectName("actionGenerate_HRUs")
+        self.menuLoad_landclass.addAction(self.actionPrimary)
+        self.menuLoad_landclass.addAction(self.actionSecondary)
+        self.menuFile.addAction(self.menuLoad_landclass.menuAction())
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionClose)
+        self.menuTools.addAction(self.actionGenerate_HRUs)
+        self.menuBar.addAction(self.menuFile.menuAction())
+        self.menuBar.addAction(self.menuTools.menuAction())
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuLoad_landclass.setTitle(QtGui.QApplication.translate("MainWindow", "Load landclass", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "Tools", None, QtGui.QApplication.UnicodeUTF8))
+        self.lc_tree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Landclass", None, QtGui.QApplication.UnicodeUTF8))
+        self.lc_tree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Classes", None, QtGui.QApplication.UnicodeUTF8))
+        self.lc_tree.headerItem().setText(2, QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClose.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionGenerate_HRUs_from_selected.setText(QtGui.QApplication.translate("MainWindow", "Generate HRUs", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionPrimary.setText(QtGui.QApplication.translate("MainWindow", "Primary", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSecondary.setText(QtGui.QApplication.translate("MainWindow", "Secondary", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionGenerate_HRUs.setText(QtGui.QApplication.translate("MainWindow", "Generate HRUs", None, QtGui.QApplication.UnicodeUTF8))
+
