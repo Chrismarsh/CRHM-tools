@@ -39,7 +39,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
                 super(MainWindow,self).__init__()
                 self.setupUi(self)
-                self.setWindowTitle("CRHM Tools")
+                self.setWindowTitle("CRHM Tools - 0.0.1a")
               
               #need to do the mpl init here otherwise it doesn't take up the full central widget
                 self._init_mpl_view()
