@@ -20,17 +20,18 @@ from PySide.QtUiTools import *
 
 from mainwindow import *
 
-import matplotlib
+#import matplotlib
 
-## Added for PySide
-matplotlib.use('Qt4Agg')
-matplotlib.rcParams['backend.qt4']='PySide'
+### Added for PySide
+#matplotlib.use('Qt4Agg')
+#matplotlib.rcParams['backend.qt4']='PySide'
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
-from matplotlib.figure import Figure
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
+#from matplotlib.figure import Figure
+#from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+import mpl_view 
 import crhmtools as ct
 
 
@@ -51,10 +52,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
                 self._set_layout()
                 self.showMaximized()
+                
                 #initialize the member variables
                 self.basin = ct.terrain.basin()
-                self.curr_cb = None
-                self.current_fig = ''
+                self.current_fig = '' #name of what we are plotting 
+                
                 
                 #counter to guarantee a unique landclass name
                 self.lc_count = 0
@@ -71,14 +73,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
         #set up the matplotlib view
         def _init_mpl_view(self):
-                self.mpl_view = QWidget()
-                self.fig = Figure() #(6.0, 4.0)
-                
-                
-                self.axes = self.fig.add_subplot(111)     
-                
-                self.canvas = FigureCanvas(self.fig)
-                self.canvas.setParent(self.mpl_view)
+                self.plot_widget = QWidget()
+                self.mpl_widget = mpl_view.mpl_widget(self.plot_widget )
         
         def _init_menus(self):
                 
@@ -93,12 +89,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
         def _set_layout(self):
                 hbox = QHBoxLayout()
-                hbox.addWidget(self.canvas)
-                                
-                self.mpl_view.setLayout(hbox)                
-                self.setCentralWidget(self.mpl_view)       
+                hbox.addWidget(self.mpl_widget.canvas)
+                
+                self.plot_widget.setLayout(hbox)                
+                self.setCentralWidget(self.plot_widget)       
                 self.lc_tree.resizeColumnToContents(0)
                 self.lc_tree.resizeColumnToContents(1)
+                
+                
         def _gen_hrus(self):
                 self.statusBar.showMessage('Creating HRUs...')
                 self._hrus = self.basin.create_hrus()
@@ -228,16 +226,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         def _plot_hru(self):
                 self.statusBar.showMessage('Plotting...')
                 self.current_fig = 'hrus'
-                self._clear_plot()
-                h=self.axes.imshow(self._hrus)
                 
-                divider = make_axes_locatable(self.axes)
-                cax = divider.append_axes("right", size="5%", pad=0.05)
-                
-                self.curr_cb=self.fig.colorbar(h,cax=cax) 
+                self.mpl_widget.plot_hru(self._hrus)
                 
                 
-                self.canvas.draw()
                 self.statusBar.showMessage('Done')       
                 
         def _plot_landclass(self,name,classified=True):
@@ -251,31 +243,13 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
                 self.current_fig = name
                 
-                self._clear_plot()
-
-                h=self.axes.imshow(r)
-                divider = make_axes_locatable(self.axes)
-                cax = divider.append_axes("right", size="5%", pad=0.05)
-                
-                self.curr_cb=self.fig.colorbar(h,cax=cax)
+                self.mpl_widget.plot_landclass(r)
                 
                 if classified:
-                        self.curr_cb.set_ticks( list(range(1,self.basin(name).get_nclasses()+1)))
-                        self.curr_cb.set_ticklabels(self.basin(name).get_classes_str())
-                
-                self.canvas.draw()
+                        self.mpl_widget.set_cb_ticks( list(range(1,self.basin(name).get_nclasses()+1)))
+                        self.mpl_widget.set_cb_ticklabels(self.basin(name).get_classes_str())                
+               
                 self.statusBar.showMessage('Done')
 
-        def _clear_plot(self):
-                self.axes.clear()  
-                
-                
-                
-                #remove the old colorbar
-                if self.curr_cb:
-                        self.fig.delaxes(self.fig.axes[1])
-                        self.fig.subplots_adjust(right=0.90) 
-                        self.curr_cb=None
-                self.canvas.draw()        
-                
+
 
