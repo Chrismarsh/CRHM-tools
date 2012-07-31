@@ -21,6 +21,7 @@ class module_loader():
 		    #for the moment, assume ONE class per file
 		    for name,obj in inspect.getmembers(py_mod,inspect.isclass):
 			#instaniate this 
-			self.modules[name] = eval('py_mod.'+name+'()')
+			mod = eval('py_mod.'+name+'()')
+			self.modules[mod.name] = mod
 		    
 	return self.modules 	

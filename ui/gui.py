@@ -68,17 +68,19 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 for m,obj in self.modules.items():
                         #try to find the category in the tree
                         index = self.mod_model.findItems(obj.category)
+                        
                         if index == []: #missing, so add it
                                 parent = self.mod_model.invisibleRootItem()
                                 item = QStandardItem(obj.category)
                                 parent.appendRow(item)
-                                parent = item
+                                parent = item #make the parent the new category
                         else:
-                                parent = index
+                                parent = index.pop() #because this returns a list, we need the only item in this list. Multiple finds shouldn't happen (famous last words)
                         #add the tool to the view        
                         parent.appendRow(QStandardItem(obj.name))
-
                 
+                #connect the double click even to the .run() of the module
+                self.treeView.doubleClicked.connect(lambda x: self.modules[self.mod_model.itemFromIndex(x).text()].run())
                 #counter to guarantee a unique landclass name
                 self.lc_count = 0
                 
