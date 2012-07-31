@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sat Jun 16 04:08:44 2012
-#      by: pyside-uic 0.2.13 running on PySide 1.1.0
+# Created: Tue Jul 31 23:03:55 2012
+#      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(872, 650)
+        MainWindow.resize(872, 673)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -48,10 +48,29 @@ class Ui_MainWindow(object):
         self.dockWidgetContents_3.setObjectName("dockWidgetContents_3")
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.dockWidgetContents_3)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.lc_tree = QtGui.QTreeWidget(self.dockWidgetContents_3)
+        self.tabWidget = QtGui.QTabWidget(self.dockWidgetContents_3)
+        self.tabWidget.setTabShape(QtGui.QTabWidget.Rounded)
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QtGui.QWidget()
+        self.tab.setObjectName("tab")
+        self.horizontalLayout = QtGui.QHBoxLayout(self.tab)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.lc_tree = QtGui.QTreeWidget(self.tab)
         self.lc_tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.lc_tree.setObjectName("lc_tree")
-        self.horizontalLayout_3.addWidget(self.lc_tree)
+        self.horizontalLayout.addWidget(self.lc_tree)
+        self.tabWidget.addTab(self.tab, "")
+        self.tab_2 = QtGui.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.tab_2)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.treeView = QtGui.QTreeView(self.tab_2)
+        self.treeView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.treeView.setHeaderHidden(True)
+        self.treeView.setObjectName("treeView")
+        self.horizontalLayout_2.addWidget(self.treeView)
+        self.tabWidget.addTab(self.tab_2, "")
+        self.horizontalLayout_3.addWidget(self.tabWidget)
         self.dockWidget_3.setWidget(self.dockWidgetContents_3)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget_3)
         self.actionClose = QtGui.QAction(MainWindow)
@@ -75,6 +94,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuTools.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -85,6 +105,8 @@ class Ui_MainWindow(object):
         self.lc_tree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Landclass", None, QtGui.QApplication.UnicodeUTF8))
         self.lc_tree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Classes", None, QtGui.QApplication.UnicodeUTF8))
         self.lc_tree.headerItem().setText(2, QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Basin", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Functions", None, QtGui.QApplication.UnicodeUTF8))
         self.actionClose.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGenerate_HRUs_from_selected.setText(QtGui.QApplication.translate("MainWindow", "Generate HRUs", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPrimary.setText(QtGui.QApplication.translate("MainWindow", "Primary", None, QtGui.QApplication.UnicodeUTF8))

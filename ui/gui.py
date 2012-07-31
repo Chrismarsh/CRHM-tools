@@ -33,14 +33,14 @@ from mainwindow import *
 
 import mpl_view 
 import crhmtools as ct
-
+from module_loader import *
 
 class MainWindow(QMainWindow,Ui_MainWindow):
         def __init__(self):
                 
                 super(MainWindow,self).__init__()
                 self.setupUi(self)
-                self.setWindowTitle("CRHM Tools - 0.0.1a")
+                self.setWindowTitle("CRHM Tools - 0.0.2a")
               
               #need to do the mpl init here otherwise it doesn't take up the full central widget
                 self._init_mpl_view()
@@ -57,17 +57,39 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.basin = ct.terrain.basin()
                 self.current_fig = '' #name of what we are plotting 
                 
+                loader = module_loader()
+                self.modules = loader.load(	path = os.path.join(os.getcwd(),'modules'))
+                
+                self.mod_model = QtGui.QStandardItemModel()
+                self.treeView.setModel( self.mod_model)
+                parent =  self.mod_model.invisibleRootItem()
+                
+                #loop through all the modules and add them to the tree
+                for m,obj in self.modules.items():
+                        #try to find the category in the tree
+                        index = self.mod_model.findItems(obj.category)
+                        if index == []: #missing, so add it
+                                parent = self.mod_model.invisibleRootItem()
+                                item = QStandardItem(obj.category)
+                                parent.appendRow(item)
+                                parent = item
+                        else:
+                                parent = index
+                        #add the tool to the view        
+                        parent.appendRow(QStandardItem(obj.name))
+
                 
                 #counter to guarantee a unique landclass name
                 self.lc_count = 0
                 
         #setup the tree view with the initial items
         def _init_lc_tree_view(self):
+
                 primary_land = QTreeWidgetItem(self.lc_tree)
                 primary_land.setText(0,"Primary land classes")
                 
-                secondary_land = QTreeWidgetItem(self.lc_tree)
-                secondary_land.setText(0,"Secondary land classes")
+                #secondary_land = QTreeWidgetItem(self.lc_tree)
+                #secondary_land.setText(0,"Secondary land classes")
                 
                
                 
@@ -106,7 +128,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.lc_tree.insertTopLevelItem(2,tw)
                 
                 self._add_to_primary_tree("HRUs",'Generated HRUs',self.basin.get_num_hrus(),'')
-                
+                self._plot_hru()
                 self.statusBar.showMessage('Done')
                 
                 
@@ -202,23 +224,26 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                         
                         #remove plot if we are currently showing it
                         if self.current_fig == item.text(0):
-                                self._clear_plot()
+                                self.mpl_widget.clear()
                             
                         self.basin.remove_landclass(item.text(0))
                         
-                        self.lc_tree.clear()
-                        
-                        tw = QTreeWidgetItem()
-                        tw.setText(0,"Primary land classes")
-                        self.lc_tree.insertTopLevelItem(0,tw)
-                        
-                        tw = QTreeWidgetItem()
-                        tw.setText(0,"Secondary land classes")
-                        self.lc_tree.insertTopLevelItem(1,tw)                        
-                        
-                        
-                        for i in self.basin._landclass.values():
-                                self._add_to_primary_tree("Primary land classes",i.name(),i.get_nclasses(),i.get_file_name())
+                        self._rebuild_tree()
+
+        def _rebuild_tree(self):
+                self.lc_tree.clear()
+                
+                tw = QTreeWidgetItem()
+                tw.setText(0,"Primary land classes")
+                self.lc_tree.insertTopLevelItem(0,tw)
+                
+                #tw = QTreeWidgetItem()
+                #tw.setText(0,"Secondary land classes")
+                #self.lc_tree.insertTopLevelItem(1,tw)                        
+                
+                
+                for i in self.basin._landclass.values():
+                        self._add_to_primary_tree("Primary land classes",i.name(),i.get_nclasses(),i.get_file_name())
                         
                         
                         

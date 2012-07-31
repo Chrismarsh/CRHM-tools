@@ -15,7 +15,6 @@
 
 import numpy as np
 import gdal
-import numpy as np
 import matplotlib.pyplot as plt
 gdal.UseExceptions() #enable exception handling
 
