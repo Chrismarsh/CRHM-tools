@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Jul 31 23:03:55 2012
+# Created: Wed Aug 01 18:13:07 2012
 #      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -65,6 +65,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.tab_2)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.treeView = QtGui.QTreeView(self.tab_2)
+        self.treeView.setMouseTracking(True)
         self.treeView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.treeView.setHeaderHidden(True)
         self.treeView.setObjectName("treeView")

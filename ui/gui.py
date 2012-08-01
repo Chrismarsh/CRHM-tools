@@ -36,6 +36,7 @@ import crhmtools as ct
 from module_loader import *
 
 class MainWindow(QMainWindow,Ui_MainWindow):
+
         def __init__(self):
                 
                 super(MainWindow,self).__init__()
@@ -79,11 +80,30 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                         #add the tool to the view        
                         parent.appendRow(QStandardItem(obj.name))
                 
-                #connect the double click even to the .run() of the module
-                self.treeView.doubleClicked.connect(lambda x: self.modules[self.mod_model.itemFromIndex(x).text()].run())
+
+                #connect the double click event to the .run() of the module
+                self.treeView.doubleClicked.connect(self._handle_modtree_dblclick_tip)
+                #connect single click event to the .description of the module and show it
+                self.treeView.clicked.connect(self._handle_modtree_click_tip)
+
                 #counter to guarantee a unique landclass name
                 self.lc_count = 0
                 
+        #handle the click and double click events on the moule tree       
+        def _handle_modtree_click_tip(self, item):
+                try:
+                        self.statusBar.showMessage(self.modules[self.mod_model.itemFromIndex(item).text()].description)
+                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
+                        self.statusBar.showMessage(self.mod_model.itemFromIndex(item).text() + ' toolbox')
+                        
+        def _handle_modtree_dblclick_tip(self, item):
+                try:
+                        self.modules[self.mod_model.itemFromIndex(item).text()].run()
+                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
+                        pass
+
+
+        
         #setup the tree view with the initial items
         def _init_lc_tree_view(self):
 
