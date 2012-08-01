@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Aug 01 18:13:07 2012
+# Created: Wed Aug 01 23:15:19 2012
 #      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -55,10 +55,12 @@ class Ui_MainWindow(object):
         self.tab.setObjectName("tab")
         self.horizontalLayout = QtGui.QHBoxLayout(self.tab)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.lc_tree = QtGui.QTreeWidget(self.tab)
-        self.lc_tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.lc_tree.setObjectName("lc_tree")
-        self.horizontalLayout.addWidget(self.lc_tree)
+        self.lc_treeview = QtGui.QTreeView(self.tab)
+        self.lc_treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.lc_treeview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.lc_treeview.setHeaderHidden(True)
+        self.lc_treeview.setObjectName("lc_treeview")
+        self.horizontalLayout.addWidget(self.lc_treeview)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName("tab_2")
@@ -95,7 +97,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuTools.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -103,9 +105,6 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuLoad_landclass.setTitle(QtGui.QApplication.translate("MainWindow", "Load landclass", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "Tools", None, QtGui.QApplication.UnicodeUTF8))
-        self.lc_tree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Landclass", None, QtGui.QApplication.UnicodeUTF8))
-        self.lc_tree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Classes", None, QtGui.QApplication.UnicodeUTF8))
-        self.lc_tree.headerItem().setText(2, QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Basin", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Functions", None, QtGui.QApplication.UnicodeUTF8))
         self.actionClose.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))

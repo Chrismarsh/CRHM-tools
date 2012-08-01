@@ -43,14 +43,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.setupUi(self)
                 self.setWindowTitle("CRHM Tools - 0.0.2a")
               
+              #load the dynamic modules
+                loader = module_loader()
+                self.modules = loader.load(	path = os.path.join(os.getcwd(),'modules'))              
+
               #need to do the mpl init here otherwise it doesn't take up the full central widget
                 self._init_mpl_view()
                 
-                self._init_lc_tree_view()
+                self._init_lc_treeview_view()
                 self._init_menus()
                 
-                self.statusBar.showMessage('Ready')
-                
+
                 self._set_layout()
                 self.showMaximized()
                 
@@ -58,9 +61,45 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.basin = ct.terrain.basin()
                 self.current_fig = '' #name of what we are plotting 
                 
-                loader = module_loader()
-                self.modules = loader.load(	path = os.path.join(os.getcwd(),'modules'))
+
+                #counter to guarantee a unique landclass name
+                self.lc_count = 0
                 
+                self.statusBar.showMessage('Ready')
+                
+        #handle the click and double click events on the moule tree       
+        def _handle_modtree_click_tip(self, item):
+                try:
+                        self.statusBar.showMessage(self.modules[self.mod_model.itemFromIndex(item).text()].description)
+                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
+                        self.statusBar.showMessage(self.mod_model.itemFromIndex(item).text() + ' toolbox')
+                        
+        def _handle_modtree_dblclick_tip(self, item):
+                try:
+                        self.modules[self.mod_model.itemFromIndex(item).text()].run()
+                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
+                        pass
+
+
+        
+        #setup the tree view with the initial items
+        def _init_lc_treeview_view(self):
+
+                #initialize the landclass treeview
+                self.lc_model = QtGui.QStandardItemModel()
+                self.lc_treeview.setModel(self.lc_model)
+                parent = self.lc_model.invisibleRootItem()
+                
+                primary_land = QStandardItem('Primary land classes')
+                self.lc_model.appendRow(primary_land)
+                
+                primary_land = QStandardItem('Secondary land classes')
+                self.lc_model.appendRow(primary_land)                
+
+                primary_land = QStandardItem('Generated HRUs')
+                self.lc_model.appendRow(primary_land)               
+               
+               #initialize the module treeivew
                 self.mod_model = QtGui.QStandardItemModel()
                 self.treeView.setModel( self.mod_model)
                 parent =  self.mod_model.invisibleRootItem()
@@ -85,34 +124,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.treeView.doubleClicked.connect(self._handle_modtree_dblclick_tip)
                 #connect single click event to the .description of the module and show it
                 self.treeView.clicked.connect(self._handle_modtree_click_tip)
-
-                #counter to guarantee a unique landclass name
-                self.lc_count = 0
-                
-        #handle the click and double click events on the moule tree       
-        def _handle_modtree_click_tip(self, item):
-                try:
-                        self.statusBar.showMessage(self.modules[self.mod_model.itemFromIndex(item).text()].description)
-                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
-                        self.statusBar.showMessage(self.mod_model.itemFromIndex(item).text() + ' toolbox')
-                        
-        def _handle_modtree_dblclick_tip(self, item):
-                try:
-                        self.modules[self.mod_model.itemFromIndex(item).text()].run()
-                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
-                        pass
-
-
-        
-        #setup the tree view with the initial items
-        def _init_lc_tree_view(self):
-
-                primary_land = QTreeWidgetItem(self.lc_tree)
-                primary_land.setText(0,"Primary land classes")
-                
-                #secondary_land = QTreeWidgetItem(self.lc_tree)
-                #secondary_land.setText(0,"Secondary land classes")
-                
                
                 
         #set up the matplotlib view
@@ -129,7 +140,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
                 
                 #tree right-click context menu
-                self.lc_tree.customContextMenuRequested.connect(self._context_menu)
+                self.lc_treeview.customContextMenuRequested.connect(self._context_menu)
+
                 
         def _set_layout(self):
                 hbox = QHBoxLayout()
@@ -137,19 +149,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
                 self.plot_widget.setLayout(hbox)                
                 self.setCentralWidget(self.plot_widget)       
-                self.lc_tree.resizeColumnToContents(0)
-                self.lc_tree.resizeColumnToContents(1)
+                self.lc_treeview.resizeColumnToContents(0)
+                self.lc_treeview.resizeColumnToContents(1)
                 
                 
         def _gen_hrus(self):
                 self.statusBar.showMessage('Creating HRUs...')
                 self._hrus = self.basin.create_hrus()
-                tw = QTreeWidgetItem()
-                tw.setText(0,"HRUs")
                 
-                self.lc_tree.insertTopLevelItem(2,tw)
+                parent = self.lc_model.findItems('Generated HRUs').pop()
+                parent.appendRow(QStandardItem('HRU'))
                 
-                self._add_to_primary_tree("HRUs",'Generated HRUs',self.basin.get_num_hrus(),'')
+                
+                self.lc_treeview.expand(parent.index())
+                
                 self._plot_hru()
                 self.statusBar.showMessage('Done')
                 
@@ -187,14 +200,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.basin.define_landclass(fname,name,num_classes)
                 self.statusBar.showMessage('Done')
 
-                
-                self._add_to_primary_tree("Primary land classes",name, num_classes, fname)
+                parent = self.lc_model.findItems('Primary land classes').pop()
+                parent.appendRow(QStandardItem(name))
+
                       
                        
                 self._plot_landclass(name)  
 
         def _add_to_primary_tree(self, parent, name, num_classes, fname):
-                it = self.lc_tree.findItems(parent,Qt.MatchFlag.MatchExactly)
+                it = self.lc_treeview.findItems(parent,Qt.MatchFlag.MatchExactly)
                 it=it[0] #returns a list, but we only need the first and only occurance
                 
                 #add the new dataset to the treeview
@@ -206,7 +220,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 
         def _context_menu(self,position):
                 menu = QMenu()
-                indexes = self.lc_tree.selectedIndexes()
+                indexes = self.lc_treeview.selectedIndexes()
+                #get what we clicked
+                item=self.lc_model.itemFromIndex(self.lc_treeview.currentIndex())
+                
                 if len(indexes) > 0:           
                         
                         level = 0
@@ -214,20 +231,21 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                         while index.parent().isValid():
                                 index = index.parent()
                                 level += 1                
-                if level == 0:
+                if level == 0 and item.text() != 'Generated HRUs':
                         menu.addAction("Load landclass")
+                elif level == 0 and item.text() == 'Generated HRUs':
+                        menu.addAction('Generate HRUs from primary')
                 elif level == 1:
-                        if index.data() == 'HRUs':
+                        if index.data() == 'Generated HRUs':
                                 menu.addAction("Show")
                         else:
                                 menu.addAction("Show classified")
                                 menu.addAction("Show non-classified")
                                 menu.addAction("Remove landclass")
                         
-                #get what we clicked
-                item=self.lc_tree.itemAt(position)
-                #show menu
-                a=menu.exec_(self.lc_tree.viewport().mapToGlobal(position))
+
+                #show menu at the point we clicked
+                a=menu.exec_(self.lc_treeview.viewport().mapToGlobal(position))
                 
                 #no click
                 if not a:
@@ -236,39 +254,26 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 #do the action
                 if a.text() == "Load landclass":
                         self._open_landclass()
+                        self.lc_treeview.expand(item.index())
                 elif a.text() == 'Show':
                         self._plot_hru()
                 elif a.text() == 'Show classified':
-                        self._plot_landclass(item.text(0),True)
+                        self._plot_landclass(item.text(),True)
                 elif a.text() == 'Show non-classified':
-                        self._plot_landclass(item.text(0),False)
+                        self._plot_landclass(item.text(),False)
                 elif a.text() == 'Remove landclass':
                         
                         #remove plot if we are currently showing it
-                        if self.current_fig == item.text(0):
+                        if self.current_fig == item.text():
                                 self.mpl_widget.clear()
-                            
-                        self.basin.remove_landclass(item.text(0))
+                         
+                        self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+                        self.basin.remove_landclass(item.text())
+                elif a.text() == 'Generate HRUs from primary':
+                        self._gen_hrus()
                         
-                        self._rebuild_tree()
 
-        def _rebuild_tree(self):
-                self.lc_tree.clear()
-                
-                tw = QTreeWidgetItem()
-                tw.setText(0,"Primary land classes")
-                self.lc_tree.insertTopLevelItem(0,tw)
-                
-                #tw = QTreeWidgetItem()
-                #tw.setText(0,"Secondary land classes")
-                #self.lc_tree.insertTopLevelItem(1,tw)                        
-                
-                
-                for i in self.basin._landclass.values():
-                        self._add_to_primary_tree("Primary land classes",i.name(),i.get_nclasses(),i.get_file_name())
-                        
-                        
-                        
+    
                 
         def _plot_hru(self):
                 self.statusBar.showMessage('Plotting...')

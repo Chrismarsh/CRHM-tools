@@ -16,7 +16,8 @@ class mpl_widget:
         
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(parent)
-        
+        self.fig.set_facecolor('white')
+
         self.curr_cb = None # holds current colorbar
    
     
