@@ -3,12 +3,12 @@ CRHM-tools
 
 Python/QT front-end for the [Cold Regions Hydrologic Model (CRHM)](http://www.usask.ca/hydrology/CRHM.php) to generate HRUs from specified terrain classes.
 
-<img src="https://github.com/Chrismarsh/CRHM-tools/raw/master/Screenshot_1.png" width="95%">
+<img src="https://raw.github.com/Chrismarsh/CRHM-tools/0.0.2.a/Screenshot_1.png" width="95%">
 
 
 Depends
 ==========
-- Requires Python < 3 (probably will work with limited changes on 3.0+)
+- Requires Python < 3 
 - PySide & QT
 - Matplotlib
 - GDAL
@@ -24,6 +24,10 @@ Usage
 - Load 'Primary Landclasses' via file menu or right-clicking the treeview
 - Use the tool menu to generate the final set of HRUs
 - Right-click treeview items to toggle plotting views
+
+Features
+=========
+- Extensible plugin and UI to allow for additional functions
 
 Limitations
 ==========
