@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Aug 01 23:15:19 2012
+# Created: Thu Aug 02 18:34:32 2012
 #      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,8 +33,6 @@ class Ui_MainWindow(object):
         self.menuBar.setObjectName("menuBar")
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName("menuFile")
-        self.menuLoad_landclass = QtGui.QMenu(self.menuFile)
-        self.menuLoad_landclass.setObjectName("menuLoad_landclass")
         self.menuTools = QtGui.QMenu(self.menuBar)
         self.menuTools.setObjectName("menuTools")
         MainWindow.setMenuBar(self.menuBar)
@@ -87,9 +85,9 @@ class Ui_MainWindow(object):
         self.actionSecondary.setObjectName("actionSecondary")
         self.actionGenerate_HRUs = QtGui.QAction(MainWindow)
         self.actionGenerate_HRUs.setObjectName("actionGenerate_HRUs")
-        self.menuLoad_landclass.addAction(self.actionPrimary)
-        self.menuLoad_landclass.addAction(self.actionSecondary)
-        self.menuFile.addAction(self.menuLoad_landclass.menuAction())
+        self.actionImport_file = QtGui.QAction(MainWindow)
+        self.actionImport_file.setObjectName("actionImport_file")
+        self.menuFile.addAction(self.actionImport_file)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuTools.addAction(self.actionGenerate_HRUs)
@@ -103,7 +101,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuLoad_landclass.setTitle(QtGui.QApplication.translate("MainWindow", "Load landclass", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "Tools", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Basin", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Functions", None, QtGui.QApplication.UnicodeUTF8))
@@ -112,4 +109,5 @@ class Ui_MainWindow(object):
         self.actionPrimary.setText(QtGui.QApplication.translate("MainWindow", "Primary", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSecondary.setText(QtGui.QApplication.translate("MainWindow", "Secondary", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGenerate_HRUs.setText(QtGui.QApplication.translate("MainWindow", "Generate HRUs", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionImport_file.setText(QtGui.QApplication.translate("MainWindow", "Import file", None, QtGui.QApplication.UnicodeUTF8))
 

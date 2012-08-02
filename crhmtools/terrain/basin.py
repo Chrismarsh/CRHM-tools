@@ -19,12 +19,9 @@ class basin(object):
     def get_num_landclass(self):
         return len(self._landclass)
     
-    def define_landclass(self,fname,name,nclass):
+    def add_landclass(self,lc):
+        self._landclass[lc._name] = lc
         
-        lc = landclass()
-        lc.open(fname,name)
-        lc.classify(nclass=nclass)
-        self._landclass[name] = lc
     def get_num_hrus(self):
         return self._num_hrus
     

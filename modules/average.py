@@ -4,8 +4,8 @@ import crhmtools as ct
 from PySide import QtGui 
 
     
-class mod_avg():
-    def __init__(self):
+class mod_avg(object):
+    def __init__(self,imported_files):
         self.name = 'Average partioning'
         self.version = '1.0'
         self.description = 'Creates a landscape class by partitioning the average in to n partitions.'

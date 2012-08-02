@@ -42,12 +42,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 super(MainWindow,self).__init__()
                 self.setupUi(self)
                 self.setWindowTitle("CRHM Tools - 0.0.2a")
-              
-              #load the dynamic modules
+                
+                #holds the loaded & imported files
+                self.import_files = {}                
+                #load the dynamic modules
                 loader = module_loader()
-                self.modules = loader.load(	path = os.path.join(os.getcwd(),'modules'))              
+                
+                self.modules = loader.load(os.path.join(os.getcwd(),'modules'),self.import_files)              
 
-              #need to do the mpl init here otherwise it doesn't take up the full central widget
+                #need to do the mpl init here otherwise it doesn't take up the full central widget
                 self._init_mpl_view()
                 
                 self._init_lc_treeview_view()
@@ -61,6 +64,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.basin = ct.terrain.basin()
                 self.current_fig = '' #name of what we are plotting 
                 
+                
 
                 #counter to guarantee a unique landclass name
                 self.lc_count = 0
@@ -71,14 +75,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         def _handle_modtree_click_tip(self, item):
                 try:
                         self.statusBar.showMessage(self.modules[self.mod_model.itemFromIndex(item).text()].description)
-                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
+                except KeyError: #we need to handle the case where the user clicks the main parent item, which isn't a module
                         self.statusBar.showMessage(self.mod_model.itemFromIndex(item).text() + ' toolbox')
                         
         def _handle_modtree_dblclick_tip(self, item):
                 try:
-                        self.modules[self.mod_model.itemFromIndex(item).text()].run()
-                except: #we need to handle the case where the user clicks the main parent item, which isn't a module
+                        lc = self.modules[self.mod_model.itemFromIndex(item).text()].run()
+                except KeyError: #we need to handle the case where the user clicks the main parent item, which isn't a module
                         pass
+                
+                if lc != None:
+                        self.basin.add_landclass(lc)
+                        parent = self.lc_model.findItems('Primary land classes').pop()
+                        parent.appendRow(QStandardItem(lc._name))
+                        
 
 
         
@@ -90,6 +100,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.lc_treeview.setModel(self.lc_model)
                 parent = self.lc_model.invisibleRootItem()
                 
+                primary_land = QStandardItem('Imported files')
+                self.lc_model.appendRow(primary_land)                
+
                 primary_land = QStandardItem('Primary land classes')
                 self.lc_model.appendRow(primary_land)
                 
@@ -134,8 +147,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         def _init_menus(self):
                 
                 #top menus
-                self.actionPrimary.triggered.connect(self._open_landclass)
-                self.actionSecondary.triggered.connect(self._open_landclass)
+                self.actionImport_file.triggered.connect(self._import_file)
+
                 self.actionGenerate_HRUs.triggered.connect(self._gen_hrus)
                 
                 
@@ -167,57 +180,25 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 self.statusBar.showMessage('Done')
                 
                 
-        
-        def _open_landclass(self):
-                sender = self.sender()
-                num_classes = 2 #default num of classes
+        def _import_file(self):
                 #the file to open
                 fname, _ = QFileDialog.getOpenFileName(self, 'Open file')    
-                #bail on cancle
+                #bail on cancel
                 if fname == '':
-                        return
-                
-                
-                result = QInputDialog.getInt(self, "Number of classes", "Enter number of classes",value=2)
-                
-                #bail if we pressed cancel
-                if not result[1]:
-                        return
-                
-                num_classes = result[0]
-                
-               
-                result = QInputDialog.getText(self,"Name of class","Enter name of the landclass",text='Landclass'+str(self.lc_count))
-                self.lc_count+=1
-                #bail if we cancel
-                if not result[1]:
-                        return
-                name = result[0]
-                
+                        return                
                 self.statusBar.showMessage('Loading '+fname)
+                name,ext = os.path.splitext(os.path.split(fname)[-1])
                 
+                self.import_files[name] = ct.terrain.raster()
+                self.import_files[name].open(fname)
                 
-                self.basin.define_landclass(fname,name,num_classes)
                 self.statusBar.showMessage('Done')
-
-                parent = self.lc_model.findItems('Primary land classes').pop()
+                
+                parent = self.lc_model.findItems('Imported files').pop()
                 parent.appendRow(QStandardItem(name))
-
-                      
-                       
-                self._plot_landclass(name)  
-
-        def _add_to_primary_tree(self, parent, name, num_classes, fname):
-                it = self.lc_treeview.findItems(parent,Qt.MatchFlag.MatchExactly)
-                it=it[0] #returns a list, but we only need the first and only occurance
+                self.lc_treeview.expand(parent.index())                
                 
-                #add the new dataset to the treeview
-                child = QTreeWidgetItem(it)
-                child.setText(0,name)
-                child.setText(1,str(num_classes))
-                child.setText(2,fname)
-                it.setExpanded(True)
-                
+
         def _context_menu(self,position):
                 menu = QMenu()
                 indexes = self.lc_treeview.selectedIndexes()

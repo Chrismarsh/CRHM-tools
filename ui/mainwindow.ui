@@ -41,14 +41,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuLoad_landclass">
-     <property name="title">
-      <string>Load landclass</string>
-     </property>
-     <addaction name="actionPrimary"/>
-     <addaction name="actionSecondary"/>
-    </widget>
-    <addaction name="menuLoad_landclass"/>
+    <addaction name="actionImport_file"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
@@ -150,6 +143,11 @@
   <action name="actionGenerate_HRUs">
    <property name="text">
     <string>Generate HRUs</string>
+   </property>
+  </action>
+  <action name="actionImport_file">
+   <property name="text">
+    <string>Import file</string>
    </property>
   </action>
  </widget>
