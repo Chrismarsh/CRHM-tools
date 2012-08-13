@@ -78,12 +78,18 @@
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QTreeView" name="lc_treeview">
+          <widget class="LCTreeView" name="lc_treeview">
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
            </property>
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="dragEnabled">
+            <bool>true</bool>
+           </property>
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::DragDrop</enum>
            </property>
            <property name="headerHidden">
             <bool>true</bool>
@@ -152,6 +158,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>LCTreeView</class>
+   <extends>QTreeView</extends>
+   <header>lctreeview.py</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

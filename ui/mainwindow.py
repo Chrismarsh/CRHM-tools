@@ -2,12 +2,13 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Thu Aug 02 18:34:32 2012
+# Created: Mon Aug 13 22:06:51 2012
 #      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
+from lctreeview import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -53,9 +54,11 @@ class Ui_MainWindow(object):
         self.tab.setObjectName("tab")
         self.horizontalLayout = QtGui.QHBoxLayout(self.tab)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.lc_treeview = QtGui.QTreeView(self.tab)
+        self.lc_treeview = LCTreeView(self.tab)
         self.lc_treeview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.lc_treeview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.lc_treeview.setDragEnabled(True)
+        self.lc_treeview.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.lc_treeview.setHeaderHidden(True)
         self.lc_treeview.setObjectName("lc_treeview")
         self.horizontalLayout.addWidget(self.lc_treeview)
@@ -110,4 +113,5 @@ class Ui_MainWindow(object):
         self.actionSecondary.setText(QtGui.QApplication.translate("MainWindow", "Secondary", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGenerate_HRUs.setText(QtGui.QApplication.translate("MainWindow", "Generate HRUs", None, QtGui.QApplication.UnicodeUTF8))
         self.actionImport_file.setText(QtGui.QApplication.translate("MainWindow", "Import file", None, QtGui.QApplication.UnicodeUTF8))
+
 

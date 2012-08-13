@@ -18,6 +18,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtUiTools import *
 
+
 from mainwindow import *
 
 #import matplotlib
@@ -91,37 +92,42 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             if lc != None:
                 self.basin.add_landclass(lc)
                 parent = self.lc_model.findItems('Primary land classes').pop()
-                parent.appendRow(QStandardItem(lc._name))                        
+                item  = QStandardItem(lc._name)
+                item.setDragEnabled(False)
+                parent.appendRow(item)                        
         except KeyError: #we need to handle the case where the user clicks the main parent item, which isn't a module
             #unclear why this doesn't actually expand it.
             expand = not(self.treeView.isExpanded(self.treeView.currentIndex()))
             self.treeView.setExpanded(item,expand)
 
-
-
-
-
-
     #setup the tree view with the initial items
     def _init_lc_treeview_view(self):
 
         #initialize the landclass treeview
-        self.lc_model = QtGui.QStandardItemModel()
+        #self.lc_model = QtGui.QStandardItemModel()
+        self.lc_model = LCTreeViewModel()
         self.lc_treeview.setModel(self.lc_model)
-        
         self.lc_treeview.setItemDelegate(BoldDelegate(self))
+
         parent = self.lc_model.invisibleRootItem()
+        parent.setDropEnabled(False)
 
         primary_land = QStandardItem('Imported files')
+        primary_land.setDragEnabled(False)
         self.lc_model.appendRow(primary_land)                
 
         primary_land = QStandardItem('Primary land classes')
+        primary_land.setDragEnabled(False)
+        primary_land.setDropEnabled(False)
         self.lc_model.appendRow(primary_land)
 
         primary_land = QStandardItem('Secondary land classes')
+        primary_land.setDragEnabled(False)
         self.lc_model.appendRow(primary_land)                
 
         primary_land = QStandardItem('Generated HRUs')
+        primary_land.setDragEnabled(False)
+        primary_land.setDropEnabled(False)
         self.lc_model.appendRow(primary_land)               
 
     #initialize the module treeivew
@@ -180,6 +186,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
     def _gen_hrus(self):
         self.statusBar.showMessage('Creating HRUs...')
+
+        if self.basin.get_num_landclass() == 0:
+            self.statusBar.showMessage('No landclasses')
+            return
+        
+        slc = self.lc_model.findItems('Secondary land classes').pop() #comes back as a list, but we know there is only 1
+        
+        secondary_lc=[]
+        for i in range(0,slc.rowCount()):
+            secondary_lc.append(slc.child(i).text())
+        
+        
         self._hrus = self.basin.create_hrus()
 
         parent = self.lc_model.findItems('Generated HRUs').pop()
@@ -234,7 +252,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 menu.addAction("Show HRU")
             elif index.data() == 'Imported files':
                 menu.addAction('Show')
-            else:
+            elif index.data() == 'Primary land classes':
                 menu.addAction("Show classified")
                 menu.addAction("Show non-classified")
                 menu.addAction("Remove landclass")
