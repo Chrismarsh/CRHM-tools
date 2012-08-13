@@ -23,7 +23,8 @@ class LCTreeViewModel(QtGui.QStandardItemModel):
         for i in range(0,p.rowCount()):
             if p.child(i).text() == data.text():
                 return False
-        
+        item.setDropEnabled(False)
+        item.setDragEnabled(False)
         p.appendRow(item)
         return True
     
