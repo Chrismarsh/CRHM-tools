@@ -6,7 +6,6 @@ class LCTreeViewModel(QtGui.QStandardItemModel):
     def __init(self):
         super(LCTreeViewModel,self).__init__()
     def mimeData(self, indexes):
-        
         i = indexes[0]
         md = QtCore.QMimeData()
         md.setText(i.data())
@@ -20,6 +19,7 @@ class LCTreeViewModel(QtGui.QStandardItemModel):
         p = self.itemFromIndex(parent) # get the real parent
         
         #findItem is not working, not sure why
+        #but make sure we aren't dropping the same thing 
         for i in range(0,p.rowCount()):
             if p.child(i).text() == data.text():
                 return False
