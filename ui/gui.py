@@ -186,7 +186,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         parent.appendRow(QStandardItem('HRU'))
 
 
-        self.lc_treeview.expand(parent.index())
+        #self.lc_treeview.expand(parent.index())
 
         self._plot_hru()
         self.statusBar.showMessage('Done')
