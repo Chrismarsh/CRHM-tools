@@ -66,7 +66,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         #need to do the mpl init here otherwise it doesn't take up the full central widget
         self._init_mpl_view()
 
-        self._init_lc_treeview_view()
+        self._init_treeviews()
         self._init_menus()
 
 
@@ -101,7 +101,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.treeView.setExpanded(item,expand)
 
     #setup the tree view with the initial items
-    def _init_lc_treeview_view(self):
+    def _init_treeviews(self):
 
         #initialize the landclass treeview
         #self.lc_model = QtGui.QStandardItemModel()
@@ -134,21 +134,26 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.mod_model = QtGui.QStandardItemModel()
         self.treeView.setModel( self.mod_model)
         parent =  self.mod_model.invisibleRootItem()
-
+        
+        row=0
         #loop through all the modules and add them to the tree
         for m,obj in self.modules.items():
             #try to find the category in the tree
             index = self.mod_model.findItems(obj.category)
 
-            if index == []: #missing, so add it
+            if index == []: #missing this category, so add it
                 parent = self.mod_model.invisibleRootItem()
                 item = QStandardItem(obj.category)
+
                 parent.appendRow(item)
                 parent = item #make the parent the new category
             else:
                 parent = index.pop() #because this returns a list, we need the only item in this list. Multiple finds shouldn't happen (famous last words)
+                
             #add the tool to the view        
-            parent.appendRow(QStandardItem(obj.name))
+            name = QStandardItem(obj.name)
+            parent.appendRow(name)
+            
 
 
         #connect the double click event to the .run() of the module
@@ -202,11 +207,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         parent = self.lc_model.findItems('Generated HRUs').pop()
         parent.appendRow(QStandardItem('HRU'))
-
-
-        #self.lc_treeview.expand(parent.index())
-
-        self._plot_hru()
         self.statusBar.showMessage('Done')
 
 
