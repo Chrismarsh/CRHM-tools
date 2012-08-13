@@ -35,6 +35,14 @@ import mpl_view
 import crhmtools as ct
 from module_loader import *
 
+class BoldDelegate(QtGui.QStyledItemDelegate):
+
+    def paint(self, painter, option, index):
+        if index.data(QtCore.Qt.UserRole) == 1:
+            option.font.setWeight(QtGui.QFont.Bold)
+            
+        QtGui.QStyledItemDelegate.paint(self, painter, option, index)    
+        
 class MainWindow(QMainWindow,Ui_MainWindow):
 
     def __init__(self):
@@ -49,7 +57,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         loader = module_loader()
 
         self.modules = loader.load(os.path.join(os.getcwd(),'modules'),self.import_files)              
-
+        self.current_fig = '' #name of what we are plotting 
+        self.current_fig_item = None #reference to the QItem for the current figure (saves us having to look it up each time)
+        #counter to guarantee a unique landclass name
+        self.lc_count = 0
+        
         #need to do the mpl init here otherwise it doesn't take up the full central widget
         self._init_mpl_view()
 
@@ -62,12 +74,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         #initialize the member variables
         self.basin = ct.terrain.basin()
-        self.current_fig = '' #name of what we are plotting 
 
-
-
-        #counter to guarantee a unique landclass name
-        self.lc_count = 0
 
         self.statusBar.showMessage('Ready')
 
@@ -101,6 +108,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         #initialize the landclass treeview
         self.lc_model = QtGui.QStandardItemModel()
         self.lc_treeview.setModel(self.lc_model)
+        
+        self.lc_treeview.setItemDelegate(BoldDelegate(self))
         parent = self.lc_model.invisibleRootItem()
 
         primary_land = QStandardItem('Imported files')
@@ -198,8 +207,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.statusBar.showMessage('Done')
 
         parent = self.lc_model.findItems('Imported files').pop()
-        parent.appendRow(QStandardItem(name))
-        self.lc_treeview.expand(parent.index())                
+        it = parent.appendRow(QStandardItem(name))
+        self.lc_treeview.expand(parent.index())           
+        
 
 
     def _context_menu(self,position):
@@ -253,49 +263,52 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             #remove plot if we are currently showing it
             if self.current_fig == item.text():
                 self.mpl_widget.clear()
+                self.current_fig_item = None
 
             self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+         
             self.basin.remove_landclass(item.text())
         elif a.text() == 'Generate HRUs from primary':
             self._gen_hrus()
+        
+        #set the current figure to be the bolded text
+        if 'Show' in a.text():
+            if  self.current_fig_item:
+                self.current_fig_item.setData(0,QtCore.Qt.UserRole) #unbold 
+                
+            item.setData(1,QtCore.Qt.UserRole)
+            self.current_fig_item = item
 
 
-
-
+    def plot(self,name,raster):
+        self.statusBar.showMessage('Plotting...')
+        
+        self.current_fig = name
+        self.mpl_widget.plot(raster)
+        self.statusBar.showMessage('Done')     
 
     def _plot_hru(self):
-        self.statusBar.showMessage('Plotting...')
-        self.current_fig = 'hrus'
-
-        self.mpl_widget.plot(self._hrus)
-
-
-        self.statusBar.showMessage('Done')       
+        self.plot('hrus',self._hrus)
+        
     
     def _plot_imported(self, name):
-        self.statusBar.showMessage('Plotting...')
-        self.current_fig = 'imported_'+name
+
         r=self.import_files[name].get_raster()
-        self.mpl_widget.plot(r)
-        self.statusBar.showMessage('Done')   
-        
-        
+        self.plot('imported_'+name,r)
+
     def _plot_landclass(self,name,classified=True):
 
-        self.statusBar.showMessage('Plotting...')
         if classified:
             r = self.basin(name).get_classraster()
 
         else:
             r = self.basin(name).get_raster()
 
-        self.current_fig = name
-
-        self.mpl_widget.plot(r)
+        self.plot(name,r)
 
         if classified:
             self.mpl_widget.set_cb_ticks( list(range(1,self.basin(name).get_nclasses()+1)))
             self.mpl_widget.set_cb_ticklabels(self.basin(name).get_classes_str())                
 
-        self.statusBar.showMessage('Done')
+
 
