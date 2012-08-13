@@ -30,11 +30,10 @@ class mpl_widget(object):
                 self.fig.subplots_adjust(right=0.90) 
                 self.curr_cb=None
         self.canvas.draw()              
-        
-    def plot_hru(self, hru):
-
+     
+    def plot(self, thing_to_plot):
         self.clear()
-        h=self.axes.imshow(hru)
+        h=self.axes.imshow(thing_to_plot)
         
         divider = make_axes_locatable(self.axes)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -43,19 +42,8 @@ class mpl_widget(object):
         
         
         self.canvas.draw()
-    
-    def plot_landclass(self, landclass):
-        self.clear()
-        h=self.axes.imshow(landclass)
-        divider = make_axes_locatable(self.axes)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
         
-        self.curr_cb=self.fig.colorbar(h,cax=cax)
-        
-        
-        
-        self.canvas.draw()        
-    
+       
     #set colourbar ticks
     def set_cb_ticks(self,tick_range):
         self.curr_cb.set_ticks(tick_range)
