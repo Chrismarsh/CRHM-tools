@@ -13,8 +13,7 @@ class basin(object):
     """Describes a CRHM basin"""
     def __init__(self):
         self._landclass = {}
-        self._hrus={} #holds the bin edges for each raster
-        self._final_hrus={}
+        self._hrus= None #holds the generated HRU
 
     def get_num_landclass(self):
         return len(self._landclass)
@@ -42,12 +41,8 @@ class basin(object):
         stack = np.dstack(([r.get_classraster() for r in self._landclass.values()]))
 
         #do the classification
-        out = (np.array([np.array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
+        self._hrus = (np.array([np.array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
                  (2 + np.arange(len(hrus)))[:, None, None]).max(axis=0) - 1       
-
-    
-        return out
-        
     
     def show(self):
         

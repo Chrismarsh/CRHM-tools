@@ -177,8 +177,16 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.lc_treeview.resizeColumnToContents(1)
     
     def _open_hru_details(self):
-        wnd = HRUDetails(self,self.basin)
+        #load the list of secondary landclasses & populate a list of them
+        slc = self.lc_model.findItems('Secondary land classes').pop() #comes back as a list, but we know there is only 1
+        
+        secondary_lc=[]
+        for i in range(0,slc.rowCount()):
+            secondary_lc.append(slc.child(i).text())        
+
+        wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files)
         wnd.show()
+        
     #Generate the HRU
     def _gen_hrus(self):
         self.statusBar.showMessage('Creating HRUs...')
@@ -188,15 +196,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.statusBar.showMessage('No landclasses')
             return
         
-        #load the list of secondary landclasses & populate a list of them
-        slc = self.lc_model.findItems('Secondary land classes').pop() #comes back as a list, but we know there is only 1
-        
-        secondary_lc=[]
-        for i in range(0,slc.rowCount()):
-            secondary_lc.append(slc.child(i).text())
-        
+
         #call the actual creation routine
-        self._hrus = self.basin.create_hrus()
+        self.basin.create_hrus()
 
         #add to tree
         parent = self.lc_model.findItems('Generated HRUs').pop()
@@ -210,9 +212,16 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         #bail on cancel
         if fname == '':
             return                
+        
+        
         self.statusBar.showMessage('Loading '+fname)
         name,ext = os.path.splitext(os.path.split(fname)[-1])
 
+        #bail if we have already loaded this file.
+        if self.import_files.has_key(name):
+            self.statusBar.showMessage('File already imported')
+            return
+        
         #add to  the list
         self.import_files[name] = ct.terrain.raster()
         self.import_files[name].open(fname)
@@ -306,7 +315,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
     #show the hru
     def _plot_hru(self):
-        self.plot('hrus',self._hrus)
+        self.plot('hrus',self.basin._hrus)
         
     #show the imported file
     def _plot_imported(self, name):
