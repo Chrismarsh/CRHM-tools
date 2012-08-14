@@ -2,13 +2,12 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Mon Aug 13 22:06:51 2012
+# Created: Tue Aug 14 18:46:22 2012
 #      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
-from lctreeview import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -36,6 +35,10 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         self.menuTools = QtGui.QMenu(self.menuBar)
         self.menuTools.setObjectName("menuTools")
+        self.menuView = QtGui.QMenu(self.menuBar)
+        self.menuView.setObjectName("menuView")
+        self.menuHelp = QtGui.QMenu(self.menuBar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtGui.QStatusBar(MainWindow)
         self.statusBar.setObjectName("statusBar")
@@ -90,12 +93,22 @@ class Ui_MainWindow(object):
         self.actionGenerate_HRUs.setObjectName("actionGenerate_HRUs")
         self.actionImport_file = QtGui.QAction(MainWindow)
         self.actionImport_file.setObjectName("actionImport_file")
+        self.actionHRU_paramaters = QtGui.QAction(MainWindow)
+        self.actionHRU_paramaters.setObjectName("actionHRU_paramaters")
+        self.actionAbout = QtGui.QAction(MainWindow)
+        self.actionAbout.setObjectName("actionAbout")
+        self.actionHelp = QtGui.QAction(MainWindow)
+        self.actionHelp.setObjectName("actionHelp")
         self.menuFile.addAction(self.actionImport_file)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuTools.addAction(self.actionGenerate_HRUs)
+        self.menuView.addAction(self.actionHRU_paramaters)
+        self.menuHelp.addAction(self.actionHelp)
         self.menuBar.addAction(self.menuFile.menuAction())
+        self.menuBar.addAction(self.menuView.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
+        self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
@@ -105,6 +118,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "Tools", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "View", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Basin", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Functions", None, QtGui.QApplication.UnicodeUTF8))
         self.actionClose.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))
@@ -113,5 +128,8 @@ class Ui_MainWindow(object):
         self.actionSecondary.setText(QtGui.QApplication.translate("MainWindow", "Secondary", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGenerate_HRUs.setText(QtGui.QApplication.translate("MainWindow", "Generate HRUs", None, QtGui.QApplication.UnicodeUTF8))
         self.actionImport_file.setText(QtGui.QApplication.translate("MainWindow", "Import file", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHRU_paramaters.setText(QtGui.QApplication.translate("MainWindow", "HRU paramaters", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionAbout.setText(QtGui.QApplication.translate("MainWindow", "About", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHelp.setText(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
 
-
+from lctreeview import LCTreeView

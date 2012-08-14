@@ -23,7 +23,8 @@ from mainwindow import *
 import mpl_view 
 import crhmtools as ct
 from module_loader import *
-
+from lctreeview import *
+from hru_details import *
 
 class MainWindow(QMainWindow,Ui_MainWindow):
 
@@ -32,7 +33,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         super(MainWindow,self).__init__()
         self.setupUi(self)
         self.setWindowTitle("CRHM Tools - 0.0.2a")
-
+        
         #initialize the member variables
         #---------------------------------
         self.basin = ct.terrain.basin()        
@@ -160,6 +161,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         #Generate a HRU
         self.actionGenerate_HRUs.triggered.connect(self._gen_hrus)
+        
+        self.actionClose.triggered.connect(self.close)
+        
+        self.actionHRU_paramaters.triggered.connect(self._open_hru_details)
 
     #set the layouts
     def _set_layout(self):
@@ -170,7 +175,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.setCentralWidget(self.plot_widget)       
         self.lc_treeview.resizeColumnToContents(0)
         self.lc_treeview.resizeColumnToContents(1)
-
+    
+    def _open_hru_details(self):
+        wnd = HRUDetails(self,self.basin)
+        wnd.show()
     #Generate the HRU
     def _gen_hrus(self):
         self.statusBar.showMessage('Creating HRUs...')
