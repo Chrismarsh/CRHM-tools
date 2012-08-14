@@ -183,7 +183,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         secondary_lc=[]
         for i in range(0,slc.rowCount()):
             secondary_lc.append(slc.child(i).text())        
-
+        if len(secondary_lc) == 0:
+            self.statusBar.showMessage('No secondary landclasses')
+            return
         wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files)
         wnd.show()
         
