@@ -14,12 +14,15 @@ class basin(object):
     def __init__(self):
         self._landclass = {}
         self._hrus= None #holds the generated HRU
+        self._num_hrus = 0
+        self._num_lc = 0
 
     def get_num_landclass(self):
         return len(self._landclass)
     
     def add_landclass(self,lc):
         self._landclass[lc._name] = lc
+        self._num_lc += 1
         
     def get_num_hrus(self):
         return self._num_hrus
@@ -81,3 +84,4 @@ class basin(object):
    
     def remove_landclass(self,name):
         del self._landclass[name]
+        self._num_lc-=1

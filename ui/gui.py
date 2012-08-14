@@ -183,8 +183,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         secondary_lc=[]
         for i in range(0,slc.rowCount()):
             secondary_lc.append(slc.child(i).text())        
-        if len(secondary_lc) == 0:
-            self.statusBar.showMessage('No secondary landclasses')
+        if len(secondary_lc) == 0 or self.basin._num_hrus == 0:
+            self.statusBar.showMessage('No secondary landclasses or no HRUs')
             return
         wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files)
         wnd.show()
@@ -260,12 +260,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         elif level == 1:
             if index.data() == 'Generated HRUs':
                 menu.addAction("Show HRU")
+            elif index.data() == 'Secondary land classes':
+                menu.addAction('Remove')
             elif index.data() == 'Imported files':
                 menu.addAction('Show')
+                menu.addAction('Close')
             elif index.data() == 'Primary land classes':
                 menu.addAction("Show classified")
                 menu.addAction("Show non-classified")
-                menu.addAction("Remove landclass")
+                menu.addAction("Remove")
 
 
         #show menu at the point we clicked
@@ -280,22 +283,28 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self._import_file()
         elif a.text() == 'Show':
             self._plot_imported(item.text())
+        elif a.text() == 'Close':
+            del self.import_files[item.text()]
+            self.lc_model.removeRow(item.row(),parent=item.parent().index())   
         elif a.text() == 'Show HRU':
             self._plot_hru()
         elif a.text() == 'Show classified':
             self._plot_landclass(item.text(),True)
         elif a.text() == 'Show non-classified':
             self._plot_landclass(item.text(),False)
-        elif a.text() == 'Remove landclass':
-
-            #remove plot if we are currently showing it
-            if self.current_fig == item.text():
-                self.mpl_widget.clear()
-                self.current_fig_item = None
-
-            self.lc_model.removeRow(item.row(),parent=item.parent().index())   
-         
-            self.basin.remove_landclass(item.text())
+        elif a.text() == 'Remove':
+            if index.data() == 'Primary land classes':
+                #remove plot if we are currently showing it
+                if self.current_fig == item.text():
+                    self.mpl_widget.clear()
+                    self.current_fig_item = None
+                self.basin.remove_landclass(item.text())
+                self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+             
+                
+            elif index.data() == 'Secondary land classes':
+                self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+                
         elif a.text() == 'Generate HRUs from primary':
             self._gen_hrus()
         
