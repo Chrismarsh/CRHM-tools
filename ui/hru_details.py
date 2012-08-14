@@ -42,3 +42,4 @@ class HRUDetails(QtGui.QMainWindow):
                 self.window.tableWidget.setItem(j,i,item) #intentional i,j flip here
 
         self.window.show()
+        
