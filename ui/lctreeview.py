@@ -3,7 +3,7 @@ import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 
 class LCTreeViewModel(QtGui.QStandardItemModel):
-    def __init(self):
+    def __init__(self):
         super(LCTreeViewModel,self).__init__()
     def mimeData(self, indexes):
         i = indexes[0]
