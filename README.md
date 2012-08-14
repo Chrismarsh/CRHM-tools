@@ -3,7 +3,7 @@ CRHM-tools
 
 Python/QT front-end for the [Cold Regions Hydrologic Model (CRHM)](http://www.usask.ca/hydrology/CRHM.php) to generate HRUs from specified terrain classes.
 
-<img src="https://raw.github.com/Chrismarsh/CRHM-tools/0.0.2.a/Screenshot_1.png" width="95%">
+<img src="https://raw.github.com/Chrismarsh/CRHM-tools/master/Screenshot_1.png" width="95%">
 
 
 Depends
