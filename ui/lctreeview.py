@@ -2,6 +2,16 @@
 import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 
+#used to bold the currently shown landclass/imported file
+class BoldDelegate(QtGui.QStyledItemDelegate):
+
+    def paint(self, painter, option, index):
+        if index.data(QtCore.Qt.UserRole) == 1:
+            option.font.setWeight(QtGui.QFont.Bold)
+            
+        QtGui.QStyledItemDelegate.paint(self, painter, option, index)    
+        
+#Extended class for showing the landclasses that can do drag-drop
 class LCTreeViewModel(QtGui.QStandardItemModel):
     def __init__(self):
         super(LCTreeViewModel,self).__init__()
@@ -27,10 +37,12 @@ class LCTreeViewModel(QtGui.QStandardItemModel):
         item.setDragEnabled(False)
         p.appendRow(item)
         return True
-    
+#Extended class that can do drag-drop    
 class LCTreeView(QtGui.QTreeView):
     def __init__(self,parent):
         super(LCTreeView,self).__init__(parent)
+        self.setItemDelegate(BoldDelegate(self))
+        
         
      
     def dropEvent(self, event):

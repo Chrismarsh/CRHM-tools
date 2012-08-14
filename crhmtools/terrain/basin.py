@@ -84,9 +84,5 @@ class basin(object):
     def __call__(self,name):
         return self._landclass[name]
    
-    #def create_from_DEM(self,attr):
-        #if attr == "slope":
-            #lol = generic_3x3_window(self._landclass['dem'].get_raster(), lambda x: atan(sqrt((x[3]-x[5])**2 + (x[7]-x[1])**2)/2) * (180/3.14159))
-            
     def remove_landclass(self,name):
         del self._landclass[name]

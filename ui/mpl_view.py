@@ -9,6 +9,7 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as Naviga
 from matplotlib.figure import Figure
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+#Container for the matplotlib plot
 class mpl_widget(object):
     def __init__(self, parent):
         self.fig = Figure() #(6.0, 4.0)

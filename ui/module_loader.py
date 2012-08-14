@@ -3,12 +3,11 @@ import os
 import inspect
 import sys
 
+#Handles loading of the dynamic modules
 class module_loader(object):
     def __init__(self):
 
         self.modules = {}
-
-
 
     def load(self,path,imported_files):
 
