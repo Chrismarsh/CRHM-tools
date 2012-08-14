@@ -13,18 +13,17 @@ class basin(object):
     """Describes a CRHM basin"""
     def __init__(self):
         self._landclass = {}
-        self._hrus={} #holds the bin edges for each raster
-        self._final_hrus={}
+        self._hrus= None #holds the generated HRU
+        self._num_hrus = 0
+        self._num_lc = 0
 
     def get_num_landclass(self):
         return len(self._landclass)
     
-    def define_landclass(self,fname,name,nclass):
+    def add_landclass(self,lc):
+        self._landclass[lc._name] = lc
+        self._num_lc += 1
         
-        lc = landclass()
-        lc.open(fname,name)
-        lc.classify(nclass=nclass)
-        self._landclass[name] = lc
     def get_num_hrus(self):
         return self._num_hrus
     
@@ -45,12 +44,8 @@ class basin(object):
         stack = np.dstack(([r.get_classraster() for r in self._landclass.values()]))
 
         #do the classification
-        out = (np.array([np.array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
+        self._hrus = (np.array([np.array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
                  (2 + np.arange(len(hrus)))[:, None, None]).max(axis=0) - 1       
-
-    
-        return out
-        
     
     def show(self):
         
@@ -87,9 +82,6 @@ class basin(object):
     def __call__(self,name):
         return self._landclass[name]
    
-    #def create_from_DEM(self,attr):
-        #if attr == "slope":
-            #lol = generic_3x3_window(self._landclass['dem'].get_raster(), lambda x: atan(sqrt((x[3]-x[5])**2 + (x[7]-x[1])**2)/2) * (180/3.14159))
-            
     def remove_landclass(self,name):
         del self._landclass[name]
+        self._num_lc-=1
