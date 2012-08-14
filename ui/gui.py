@@ -94,6 +94,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 parent = self.lc_model.findItems('Primary land classes').pop()
                 item  = QStandardItem(lc._name)
                 item.setDragEnabled(False)
+                item.setDropEnabled(False)
                 parent.appendRow(item)                        
         except KeyError: #we need to handle the case where the user clicks the main parent item, which isn't a module
             #unclear why this doesn't actually expand it.
@@ -225,7 +226,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.statusBar.showMessage('Done')
 
         parent = self.lc_model.findItems('Imported files').pop()
-        it = parent.appendRow(QStandardItem(name))
+        item = QStandardItem(name)
+        item.setDropEnabled(False)
+        it = parent.appendRow(item)
         self.lc_treeview.expand(parent.index())           
         
 
