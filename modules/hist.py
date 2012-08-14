@@ -29,12 +29,18 @@ class mod_hist(module_base):
                 mbox.exec_()
                 return
             
-            return self.exec_module(file=self.selected_file, nbin=nclasses, name=name)
+            #open the file
+            lc = ct.terrain.landclass()
+            lc.open(self.selected_file)
+            #create the bins 
+            hist, edges = np.histogram(lc._raster, bins=nclasses)        
+            
+            return self.exec_module(landclass=lc, nbin=nclasses, edges=edges, name=name)
         
         return None
     
     def exec_module(self,**kwargs):
-        return ct.gis.classify(kwargs['file'],kwargs['nbin'],kwargs['name'])
+        return ct.gis.classify(kwargs['landclass'],kwargs['nbin'],kwargs['edges'],kwargs['name'])
     
     
 
