@@ -28,6 +28,7 @@ class landclass(raster):
         self._classified = None
         self._classes = []
         self._name = ''
+        self._creator=''
 
     
     def show(self,figure_handle,classified=True):
@@ -37,12 +38,17 @@ class landclass(raster):
         else:
             r = self._classified
             h=figure_handle.imshow(r)
-
+    def get_creator(self):
+        return self._creator
+    def set_creator(self,name):
+        self._creator = name
     def get_classraster(self):
         """Returns the classified raster"""
         return self._classified
     
-
+    def get_name(self):
+        return self._name
+    
     def get_classes(self):
         return self._classes
     

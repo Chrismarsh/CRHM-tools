@@ -20,11 +20,11 @@ class module_loader(object):
             #elif ext.lower() == '.pyc':
                 #py_mod = imp.load_compiled(name,os.path.join(path,name+ext))
 
-            #for the moment, assume ONE class per file
-            for name,obj in inspect.getmembers(py_mod,inspect.isclass):
-                if 'mod_' in name:
-                    #instaniate this 
-                    mod = eval('py_mod.'+name+'(imported_files)')
-                    self.modules[mod.name] = mod
+                #for the moment, assume ONE class per file
+                for name,obj in inspect.getmembers(py_mod,inspect.isclass):
+                    if 'mod_' in name:
+                        #instaniate this 
+                        mod = eval('py_mod.'+name+'(imported_files)')
+                        self.modules[mod.name] = mod
 
         return self.modules 	

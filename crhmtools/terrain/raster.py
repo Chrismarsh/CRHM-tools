@@ -40,7 +40,10 @@ class raster(object):
         self._raster = np.array(self._raw.GetRasterBand(1).ReadAsArray())        
         self._is_open = True
         self._fname = fname
-        
+    def get_resolution(self):
+        geotransform = self._raw.GetGeoTransform()
+        return [geotransform[1],geotransform[5]]
+    
     #Returns the x size
     def xsize(self):
         return self._raw.RasterXSize

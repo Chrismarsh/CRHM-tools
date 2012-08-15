@@ -37,7 +37,7 @@ class module_base(QtGui.QDialog):
         self.window.filelist.clear()
         for f in self.files:
             self.window.filelist.addItem( f + '  [' + self.files[f].get_path()+']' )      
-        
+        self.window.setWindowTitle(self.name + ' - ' + str(self.version))
         #show the window
         self.window.exec_()
         

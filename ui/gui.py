@@ -25,6 +25,7 @@ import crhmtools as ct
 from module_loader import *
 from lctreeview import *
 from hru_details import *
+from properties import *
 
 class MainWindow(QMainWindow,Ui_MainWindow):
 
@@ -268,7 +269,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             elif index.data() == 'Primary land classes':
                 menu.addAction("Show classified")
                 menu.addAction("Show non-classified")
+                
                 menu.addAction("Remove")
+                
+                menu.addAction('Properties')
 
 
         #show menu at the point we clicked
@@ -292,6 +296,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self._plot_landclass(item.text(),True)
         elif a.text() == 'Show non-classified':
             self._plot_landclass(item.text(),False)
+        elif a.text() == 'Properties':
+            prop = Properties(self.basin(item.text()))
+            prop.window.exec_()
         elif a.text() == 'Remove':
             if index.data() == 'Primary land classes':
                 #remove plot if we are currently showing it

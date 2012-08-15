@@ -17,7 +17,9 @@ class mod_hist(module_base):
         self.category = 'Statistics'
 
     def run(self):
-        
+        #set a validator to the linedit so it only accepts integers
+        v=QtGui.QIntValidator(1,999,self.window.lineEdit)
+        self.window.lineEdit.setValidator(v)        
         #show the ui
         self.show_ui()
         
@@ -28,29 +30,25 @@ class mod_hist(module_base):
             nclasses=int(self.window.lineEdit.text())
             #get the name from the edit widget
             name = self.window.edit_name.text()
-
-            #check number of classies/bins
-            if nclasses  <= 0:
-                mbox =QtGui.QMessageBox()
-                mbox.setText("Cannot have <=0 bins.")
-                mbox.exec_()
-                return
-            
-            #create a new landclass
-            lc = ct.terrain.landclass()
-            #open the file
-            lc.open(self.selected_file)
-            #create the bins based on a histogram
-            hist, edges = np.histogram(lc._raster, bins=nclasses)        
-            
+           
             #call our main handler
-            return self.exec_module(landclass=lc, nbin=nclasses, edges=edges, name=name)
+            return self.exec_module(file=self.selected_file, nbin=nclasses, name=name)
+        
         
         return None
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
-        return ct.gis.classify(kwargs['landclass'],kwargs['nbin'],kwargs['edges'],kwargs['name'])
+        #create a new landclass
+        r = ct.terrain.landclass()
+        r.set_creator(self.name)
+        #open the file
+        r.open(kwargs['file'])
+        
+        #create the bins based on a histogram
+        hist, edges = np.histogram(r.get_raster(), bins=kwargs['nbin'])               
+
+        return ct.gis.classify(r,kwargs['nbin'],edges,kwargs['name'])
     
     
 

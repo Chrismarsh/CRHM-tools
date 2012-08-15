@@ -21,9 +21,10 @@ def classify(landclass=None, nclass=2, edges=[], name='landclass'):
 
         output = np.choose( mask, (output, c_value) )               
 
-
+    
     landclass._classified = output
     landclass._classes = classes
     landclass._nclass = nclass
     landclass._name = name
+
     return landclass
