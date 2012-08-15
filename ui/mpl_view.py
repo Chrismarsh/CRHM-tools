@@ -1,5 +1,6 @@
 import matplotlib
-
+import numpy as np
+from scipy import interpolate
 ## Added for PySide
 matplotlib.use('Qt4Agg')
 matplotlib.rcParams['backend.qt4']='PySide'
@@ -32,23 +33,64 @@ class mpl_widget(object):
                 self.curr_cb=None
         self.canvas.draw()              
      
-    def plot(self, thing_to_plot):
+    def plot(self, thing_to_plot, ticks=None, labels=None):
         self.clear()
-        h=self.axes.imshow(thing_to_plot)
         
+        cmap = None
+        norm = None
+        if ticks: #if we specified ticks, produce a discrete maping
+            cmap = self.cmap_discretize(matplotlib.cm.jet,len(ticks)+1)
+            norm = matplotlib.colors.BoundaryNorm(sum([ticks[:],[ticks[-1]+1]],[]), cmap.N)
+
+        #plot
+        h=self.axes.imshow(thing_to_plot,cmap=cmap,norm=norm)
+        #align the cbar with the plot
         divider = make_axes_locatable(self.axes)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cax = divider.append_axes("right", size="5%", pad=0.05)   
         
-        self.curr_cb=self.fig.colorbar(h,cax=cax) 
+        if ticks:
+            self.curr_cb=self.fig.colorbar(h,cax=cax,ticks=ticks)
+        else:
+            self.curr_cb=self.fig.colorbar(h,cax=cax) #even thought colorbar(...) has ticks=None as default arg, if we call it with ticks=None no ticks are shown.
         
+        if labels:
+            self.curr_cb.ax.set_yticklabels(labels)        
+       
         
         self.canvas.draw()
+    
+    #http://www.scipy.org/Cookbook/Matplotlib/ColormapTransformations
+    def cmap_discretize(self,cmap, N):
+        """Return a discrete colormap from the continuous colormap cmap.
         
-       
-    #set colourbar ticks
-    def set_cb_ticks(self,tick_range):
-        self.curr_cb.set_ticks(tick_range)
+            cmap: colormap instance, eg. cm.jet. 
+            N: Number of colors.
         
-    #set colourbar tick labels
-    def set_cb_ticklabels(self,tick_labels):
-        self.curr_cb.set_ticklabels(tick_labels)
+        Example
+            x = resize(arange(100), (5,100))
+            djet = cmap_discretize(cm.jet, 5)
+            imshow(x, cmap=djet)
+        """
+    
+        cdict = cmap._segmentdata.copy()
+        # N colors
+        colors_i = np.linspace(0,1.,N)
+        # N+1 indices
+        indices = np.linspace(0,1.,N+1)
+        for key in ('red','green','blue'):
+            # Find the N colors
+            D = np.array(cdict[key])
+            I = interpolate.interp1d(D[:,0], D[:,1])
+            colors = I(colors_i)
+            # Place these colors at the correct indices.
+            A = np.zeros((N+1,3), float)
+            A[:,0] = indices
+            A[1:,1] = colors
+            A[:-1,2] = colors
+            # Create a tuple for the dictionary.
+            L = []
+            for l in A:
+                L.append(tuple(l))
+            cdict[key] = tuple(L)
+        # Return colormap object.
+        return matplotlib.colors.LinearSegmentedColormap('colormap',cdict,1024)        

@@ -317,16 +317,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.current_fig_item = item
 
     #base plotting function
-    def plot(self,name,raster):
+    def plot(self,name,raster,ticks=[],labels=[]):
         self.statusBar.showMessage('Plotting...')
         
         self.current_fig = name
-        self.mpl_widget.plot(raster)
+        self.mpl_widget.plot(raster,ticks,labels)
         self.statusBar.showMessage('Done')     
 
     #show the hru
     def _plot_hru(self):
-        self.plot('hrus',self.basin._hrus)
+        ticks = range(1,self.basin.get_num_hrus()+1)
+        labels = ['HRU ' + str(i) for i in ticks]
+        self.plot('hrus',self.basin._hrus,ticks,labels)
         
     #show the imported file
     def _plot_imported(self, name):
@@ -339,15 +341,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         if classified:
             r = self.basin(name).get_classraster()
-
+            self.plot(name,r,ticks=list(range(1,self.basin(name).get_nclasses()+1)),labels=self.basin(name).get_classes_str())
         else:
             r = self.basin(name).get_raster()
-
-        self.plot(name,r)
-
-        if classified:
-            self.mpl_widget.set_cb_ticks( list(range(1,self.basin(name).get_nclasses()+1)))
-            self.mpl_widget.set_cb_ticklabels(self.basin(name).get_classes_str())                
-
+            self.plot(name,r)
 
 
