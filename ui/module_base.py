@@ -21,15 +21,26 @@ class module_base(QtGui.QDialog):
         self.window.btnOk.clicked.connect(self._Ok_pressed)
         
         self.selected_file=''
-        self.ok_exit = False
+
+        self.lc = None
     
-    #return the selected file and close the window
+    def mbox_error(self, string):
+        msgBox = QtGui.QMessageBox()
+        msgBox.setText(string)
+        msgBox.setWindowTitle('Error')
+        msgBox.setIcon(QtGui.QMessageBox.Critical) 
+        msgBox.exec_()        
+    #return the selected file before handing off to the 'user' function
     def _Ok_pressed(self):
-        self.ok_exit = True
+
         file = self.window.filelist.currentText()
         file = file[file.find('[')+1:-1]   
         self.selected_file = file
-        self.window.close()
+        
+        self.lc =  self.run()
+        
+        if self.lc:
+            self.window.close()
     
     #setup the ui and then show it
     def show_ui(self):
@@ -40,4 +51,4 @@ class module_base(QtGui.QDialog):
         self.window.setWindowTitle(self.name + ' - ' + str(self.version))
         #show the window
         self.window.exec_()
-        
+        return self.lc

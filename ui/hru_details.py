@@ -3,7 +3,7 @@ import crhmtools as ct
 import numpy as np
 
 class HRUDetails(QtGui.QMainWindow):
-    def __init__(self, parent, basin, secondary_lc, imported_files):
+    def __init__(self, parent, basin, secondary_lc, imported_files,generated_files):
         super(HRUDetails,self).__init__(parent=parent)
 
         #load the UI file
@@ -16,6 +16,7 @@ class HRUDetails(QtGui.QMainWindow):
         self.basin = basin
         self.slc = secondary_lc
         self.imported_files = imported_files
+        self.generated_files = generated_files
         
         self.window.setWindowTitle('HRU details - CRHM Tools')
         #setup menubar
@@ -37,7 +38,11 @@ class HRUDetails(QtGui.QMainWindow):
         
         for i in range(0,nhru):
             for j in range(0,len(self.slc)):
-                mean = np.mean(self.imported_files[self.slc[j]].get_raster()[self.basin._hrus  == i+1])
+                try:
+                    mean = np.mean(self.imported_files[self.slc[j]].get_raster()[self.basin._hrus  == i+1])
+                except:
+                    mean = np.mean(self.generated_files[self.slc[j]].get_raster()[self.basin._hrus  == i+1])
+                    
                 item = QtGui.QTableWidgetItem('{0:.2f}'.format(mean))
                 self.window.tableWidget.setItem(j,i,item) #intentional i,j flip here
 

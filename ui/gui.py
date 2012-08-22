@@ -38,15 +38,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         #initialize the member variables
         #---------------------------------
         self.basin = ct.terrain.basin()        
-        
+        self.generated_lc = {}
         self.import_files = {}  #holds the loaded & imported files        
         self.current_fig = '' #name of what we are plotting 
         self.current_fig_item = None #reference to the QItem for the current figure (saves us having to look it up each time)    
         
         #--------------------------------
         #load the dynamic modules
-        loader = module_loader()
-        self.modules = loader.load(os.path.join(os.getcwd(),'modules'),self.import_files)              
+        self.loader = module_loader()
+        self.loader.enumerate(os.path.join(os.getcwd(),'modules'))              
        
        
         #need to do the mpl init here otherwise it doesn't take up the full central widget
@@ -64,19 +64,22 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #handle the snigleclick  on the module tree and show the module description in the statusbar
     def _modtree_show_tip(self, item):
         try:
-            self.statusBar.showMessage(self.modules[self.mod_model.itemFromIndex(item).text()].description)
+            self.statusBar.showMessage(self.loader(self.mod_model.itemFromIndex(item).text()).description)
         except KeyError: #we need to handle the case where the user clicks the main parent item, which isn't a module
             self.statusBar.showMessage(self.mod_model.itemFromIndex(item).text() + ' toolbox')
 
     #handle the double click on the module tree and run the selected module
     def _modtree_run_module(self, item):
         try:
-            lc = self.modules[self.mod_model.itemFromIndex(item).text()].run()
+            name = self.mod_model.itemFromIndex(item).text()
+            module = self.loader.load(name, self.import_files)
+            lc = module.show_ui()
             if lc != None:
-                self.basin.add_landclass(lc)
-                parent = self.lc_model.findItems('Primary land classes').pop()
+                self.generated_lc[lc.get_name()] = lc
+                #self.basin.add_landclass(lc)
+                parent = self.lc_model.findItems('From functions').pop()
                 item  = QStandardItem(lc._name)
-                item.setDragEnabled(False)
+                item.setDragEnabled(True)
                 item.setDropEnabled(False)
                 parent.appendRow(item)                        
         except KeyError: #we need to handle the case where the user clicks the main parent item, which isn't a module
@@ -91,27 +94,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         #----------------------------------
         self.lc_model = LCTreeViewModel()
         self.lc_treeview.setModel(self.lc_model)
-
         parent = self.lc_model.invisibleRootItem()
-        parent.setDropEnabled(False)
+        parent.setDropEnabled(False)        
 
-        primary_land = QStandardItem('Imported files')
-        primary_land.setDragEnabled(False)
-        self.lc_model.appendRow(primary_land)                
-
-        primary_land = QStandardItem('Primary land classes')
-        primary_land.setDragEnabled(False)
-        primary_land.setDropEnabled(False)
-        self.lc_model.appendRow(primary_land)
-
-        primary_land = QStandardItem('Secondary land classes')
-        primary_land.setDragEnabled(False)
-        self.lc_model.appendRow(primary_land)                
-
-        primary_land = QStandardItem('Generated HRUs')
-        primary_land.setDragEnabled(False)
-        primary_land.setDropEnabled(False)
-        self.lc_model.appendRow(primary_land)  
+        self.lc_model.insert_at_root('Imported files')
+        self.lc_model.insert_at_root('From functions')
+        self.lc_model.insert_at_root('Primary land classes',drop=True)
+        self.lc_model.insert_at_root('Secondary land classes',drop=True)
+        self.lc_model.insert_at_root('Generated HRUs')      
         
         #landclass tree right-click context menu
         self.lc_treeview.customContextMenuRequested.connect(self._context_menu)        
@@ -124,13 +114,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         
         row=0
         #loop through all the modules and add them to the tree
-        for m,obj in self.modules.items():
+        for obj in self.loader:
+            module = obj[1] #get the actualy module shell 
             #try to find the category in the tree
-            index = self.mod_model.findItems(obj.category)
+            index = self.mod_model.findItems(module.category)
 
             if index == []: #missing this category, so add it
                 parent = self.mod_model.invisibleRootItem()
-                item = QStandardItem(obj.category)
+                item = QStandardItem(module.category)
 
                 parent.appendRow(item)
                 parent = item #make the parent the new category
@@ -138,7 +129,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 parent = index.pop() #because this returns a list, we need the only item in this list. Multiple finds shouldn't happen (famous last words)
                 
             #add the tool to the view        
-            name = QStandardItem(obj.name)
+            name = QStandardItem(module.name)
             parent.appendRow(name)
             
 
@@ -187,13 +178,24 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if len(secondary_lc) == 0 or self.basin._num_hrus == 0:
             self.statusBar.showMessage('No secondary landclasses or no HRUs')
             return
-        wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files)
+        wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files,self.generated_lc)
         wnd.show()
         
     #Generate the HRU
     def _gen_hrus(self):
         self.statusBar.showMessage('Creating HRUs...')
 
+        p = self.lc_model.findItems('Primary land classes').pop()
+        
+        for i in range(0,p.rowCount()):
+            lc = None
+            try: #is this from our generated files?
+                lc = self.generated_lc[p.child(i).text()]
+            except: #must be from imported files
+                lc = self.import_files[p.child(i).text()]
+            
+            self.basin.add_landclass(lc)
+            
         #Ensure we have primary landclasses
         if self.basin.get_num_landclass() == 0:
             self.statusBar.showMessage('No landclasses')
@@ -226,15 +228,17 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             return
         
         #add to  the list
-        self.import_files[name] = ct.terrain.raster()
+        self.import_files[name] = ct.terrain.landclass()
         self.import_files[name].open(fname)
-
+        self.import_files[name].set_creator('Import')
+        
         self.statusBar.showMessage('Done')
 
         #add to the treeview
         parent = self.lc_model.findItems('Imported files').pop()
         item = QStandardItem(name)
         item.setDropEnabled(False)
+        item.setDragEnabled(True)
         it = parent.appendRow(item)
         self.lc_treeview.expand(parent.index())           
         
@@ -266,7 +270,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             elif index.data() == 'Imported files':
                 menu.addAction('Show')
                 menu.addAction('Close')
-            elif index.data() == 'Primary land classes':
+            elif index.data() == 'Primary land classes' or index.data() == 'From functions':
                 menu.addAction("Show classified")
                 menu.addAction("Show non-classified")
                 
@@ -297,18 +301,20 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         elif a.text() == 'Show non-classified':
             self._plot_landclass(item.text(),False)
         elif a.text() == 'Properties':
-            prop = Properties(self.basin(item.text()))
+            try: #did it come from the generated stuff?
+                prop = Properties(self.generated_lc[item.text()])
+            except: #must be an imported file
+                prop = Properties(self.import_files[item.text()])
             prop.window.exec_()
         elif a.text() == 'Remove':
-            if index.data() == 'Primary land classes':
+            if index.data() == 'Primary land classes' or index.data() == 'From functions':
                 #remove plot if we are currently showing it
                 if self.current_fig == item.text():
                     self.mpl_widget.clear()
                     self.current_fig_item = None
-                self.basin.remove_landclass(item.text())
+               
                 self.lc_model.removeRow(item.row(),parent=item.parent().index())   
-             
-                
+
             elif index.data() == 'Secondary land classes':
                 self.lc_model.removeRow(item.row(),parent=item.parent().index())   
                 
@@ -347,10 +353,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def _plot_landclass(self,name,classified=True):
 
         if classified:
-            r = self.basin(name).get_classraster()
-            self.plot(name,r,ticks=list(range(1,self.basin(name).get_nclasses()+1)),labels=self.basin(name).get_classes_str())
+            r = self.generated_lc[name].get_classraster()
+            self.plot(name,r,ticks=list(range(1,self.generated_lc[name].get_nclasses()+1)),labels=self.generated_lc[name].get_classes_str())
         else:
-            r = self.basin(name).get_raster()
+            r = self.generated_lc[name].get_raster()
             self.plot(name,r)
 
 

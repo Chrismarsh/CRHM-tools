@@ -16,24 +16,22 @@ class mod_hist(module_base):
         self.author = 'Chris Marsh'
         self.category = 'Statistics'
 
-    def run(self):
         #set a validator to the linedit so it only accepts integers
         v=QtGui.QIntValidator(1,999,self.window.lineEdit)
-        self.window.lineEdit.setValidator(v)        
-        #show the ui
-        self.show_ui()
-        
-        #if we cleanly exited
-        if self.ok_exit == True:
-            
+        self.window.lineEdit.setValidator(v)    
+    def run(self):
+    
+        try:
             #get the number of classes from the line edit widget
             nclasses=int(self.window.lineEdit.text())
             #get the name from the edit widget
             name = self.window.edit_name.text()
-           
+            if name == '':
+                raise Exception()
             #call our main handler
             return self.exec_module(file=self.selected_file, nbin=nclasses, name=name)
-        
+        except:
+            self.mbox_error('Invalid field. Perhaps a field is empty?')
         
         return None
     
