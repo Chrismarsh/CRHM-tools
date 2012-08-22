@@ -28,7 +28,8 @@ class landclass(raster):
         self._classified = None
         self._classes = []
         self._name = ''
-        self._creator=''
+        self._creator='None'
+        self._nclass=0
 
     
     def show(self,figure_handle,classified=True):
@@ -53,12 +54,15 @@ class landclass(raster):
         return self._classes
     
     def get_classes_str(self):
-        y=np.array(["%.0f" % w for w in self.get_classes().reshape(self.get_classes().size)])
-        y=y.reshape(self.get_classes().shape)
-        x=[]
-        for i in range(self._nclass):
-            x.append(str(y[i,0]) + '--' + str(y[i,1]))
-        return x
+        if self._nclass > 0:
+            y=np.array(["%.0f" % w for w in self.get_classes().reshape(self.get_classes().size)])
+            y=y.reshape(self.get_classes().shape)
+            x=[]
+            for i in range(self._nclass):
+                x.append(str(y[i,0]) + '--' + str(y[i,1]))
+            return x
+        else:
+            return ''
     
     def get_nclasses(self):
         return self._nclass
