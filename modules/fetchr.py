@@ -3,7 +3,13 @@ import crhmtools as ct
 from ui.module_base import  *
 from PySide import QtGui, QtCore,QtUiTools 
 
-    
+#Base oned code from FetchR:
+#! Original program written March 1990; current version written June 1992.
+#! Resurrected July 2008
+
+#! Programmers:
+#!     Lawrence W. Martz and David R. Lapen
+
 class mod_fetchR(module_base):
     def __init__(self,imported_files):
         
@@ -54,29 +60,28 @@ class mod_fetchR(module_base):
                 try: 
                     if direction == 'N': #for NORTH
                         s = r._raster[:i,j] #north
-                        idx =  np.roll(s,1) >= r._raster[i,j]+elev #the roll is because we are looking north
-                        ncells=0
-                        for k in range(0,idx.size):
-                            if idx[0] == True:
-                                if idx[k]==True:
-                                    ncells = ncells+1
-                                else:
-                                    break
-                        fetch[i,j] = ncells * r.get_resolution()[0]                        
-                        #idx = np.where( np.roll(s,1) >= r._raster[i,j]+elev)[0][0] #the roll is because we are looking north
-                        #fetch[i,j] = r._raster[i-idx:i,j].size * r.get_resolution()[0]
+                        idx =  np.roll(s,1) < r._raster[i,j]+elev #the roll is because we are looking north
+
                     elif direction == 'S': #SOUTH
                         s = r._raster[i:,j]  #south direction
-                        idx = np.where( s >= r._raster[i,j]+elev)[0][0]
-                        fetch[i,j] = r._raster[i:i+idx,j].size * r.get_resolution()[0]          
+                        idx = s < r._raster[i,j]+elev
+      
                     elif direction == 'E':#east
                         s = r._raster[i,j:] 
-                        idx = np.where( s >= r._raster[i,j]+elev)[0][0]
-                        fetch[i,j] = r._raster[i,j:j+idx].size * r.get_resolution()[0]         
+                        idx = s < r._raster[i,j]+elev
+   
                     elif direction == 'W':#west
                         s = r._raster[i,:j] 
-                        idx = np.where( np.roll(s,1) >= r._raster[i,j]+elev)[0][0]
-                        fetch[i,j] = r._raster[i,j-idx:j].size * r.get_resolution()[0]                        
+                        idx = np.roll(s,1) < r._raster[i,j]+elev
+
+                    ncells=0
+                    for k in range(0,idx.size):
+                        if idx[0] == True:
+                            if idx[k]==True:
+                                ncells = ncells+1
+                            else:
+                                break
+                    fetch[i,j] = ncells * r.get_resolution()[0]                           
                 except: #catch s == [] or np.where == []
                     pass
         
