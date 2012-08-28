@@ -4,33 +4,28 @@ from ui.module_base import  *
 from PySide import QtGui, QtCore,QtUiTools 
 
     
-class mod_hist(module_base):
+class mod_aspect(module_base):
     def __init__(self,imported_files):
         
         #load the ui file
-        super(mod_hist,self).__init__(imported_files,'./modules/hist_ui.ui')
+        super(mod_aspect,self).__init__(imported_files,'./modules/aspect_ui.ui')
 
-        self.name = 'Histogram partioning'
+        self.name = 'Aspect'
         self.version = '1.0'
-        self.description = 'Creates a landscape class by partitioning the histogram in to n partitions.'
+        self.description = 'Creates an aspect.'
         self.author = 'Chris Marsh'
-        self.category = 'Statistics'
+        self.category = 'Terrain'
 
-        #set a validator to the linedit so it only accepts integers
-        v=QtGui.QIntValidator(1,999,self.window.lineEdit)
-        self.window.lineEdit.setValidator(v)    
     def run(self):
     
         try:
-            #get the number of classes from the line edit widget
-            nclasses=int(self.window.lineEdit.text())
             #get the name from the edit widget
             name = self.window.edit_name.text()
             if name == '':
-                raise Exception()
+                raise ValueError()
             #call our main handler
-            return self.exec_module(file=self.selected_file, nbin=nclasses, name=name)
-        except:
+            return self.exec_module(file=self.selected_file, name=name)
+        except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')
         
         return None
@@ -40,13 +35,26 @@ class mod_hist(module_base):
         #create a new landclass
         r = ct.terrain.landclass()
         r.set_creator(self.name)
+        r._name = kwargs['name']
         #open the file
         r.open(kwargs['file'])
         
-        #create the bins based on a histogram
-        hist, edges = np.histogram(r.get_raster(), bins=kwargs['nbin'])               
+        p,q = np.gradient(r.get_raster())
 
-        return ct.gis.classify(r,kwargs['nbin'],edges,kwargs['name'])
+        #http://webhelp.esri.com/arcgisdesktop/9.2/index.cfm?TopicName=How%20Aspect%20works
+        aspect = 180/np.pi * np.arctan2(q,-p)
+
+        #build indexes first so we don't undo some of the corrections
+        idx = aspect > 90
+        idx2 = aspect <= 90  
+        
+        aspect[idx] = 360 - aspect[idx]+90
+        
+        aspect[idx2] = 90 - aspect[idx2]
+        
+        #aspect = 90 - aspect
+        r._raster = aspect
+        return r
     
     
 

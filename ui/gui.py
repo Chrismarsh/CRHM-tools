@@ -271,12 +271,24 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 menu.addAction('Show')
                 menu.addAction('Close')
             elif index.data() == 'Primary land classes' or index.data() == 'From functions':
-                menu.addAction("Show classified")
+                act = menu.addAction("Show classified")
+                
+                #disable this option if the land class is not yet classified, i.e., came from a function that doesn't classify
+                lc = None
+                try:
+                    lc = self.import_files[item.text()]
+                except:
+                    lc = self.generated_lc[item.text()]
+                
+                if lc._classified == None:
+                    act.setDisabled(True)
+                    
                 menu.addAction("Show non-classified")
                 
                 menu.addAction("Remove")
                 
                 menu.addAction('Properties')
+                
 
 
         #show menu at the point we clicked

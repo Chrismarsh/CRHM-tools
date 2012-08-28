@@ -72,4 +72,6 @@ class raster(object):
     def save_to_file(self,fname):
         pass
     
+    def __call__(self,row,col):
+        return self._raster[x,y]
     
