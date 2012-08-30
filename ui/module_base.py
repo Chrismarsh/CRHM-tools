@@ -42,19 +42,19 @@ class module_base(QtGui.QDialog):
         
     #return the selected file before handing off to the 'user' function
     def _Ok_pressed(self):
-
+        #get currently selected file
         file = self.window.filelist.currentText()
-        idx = file.find('[')
+        idx = file.find('[') #if [ exists it's an import
         if idx != -1:
-            file = file[0:idx].rstrip()
+            file = file[0:idx].rstrip() #get the name. if it's a generated file, it won't have a path, thus [ doesn't exist
         self.selected_file = None
         #look for the file in imported files
         for f in self.files:
             if f == file:
                 self.selected_file = self.files[f]
         
+        #let's try the user generated files
         if self.selected_file == None:
-            #let's try the user generated files
             for f in self.gen_files:
                 if f == file:
                     self.selected_file = self.gen_files[f]                
@@ -62,7 +62,8 @@ class module_base(QtGui.QDialog):
         if self.selected_file  == None:
             self.mbox_error('Could not find the selected file')
             return
-
+        
+        #initialize the run. This is where the module should get all the user entered input, etc.
         kwargs = self.init_run()
         
         #bail if we have garbage
@@ -73,18 +74,21 @@ class module_base(QtGui.QDialog):
         self.window.progressBar.setRange(0,0)
         self.window.progressBar.reset#so it actually appears...        
         self._set_button_enabled(False)
+        
+        #create a queue
         q = Queue()
         def run_exec_module(q,**kwargs):
             q.put(self.exec_module(**kwargs))
+        #create our worker thread
         t = Thread(target=run_exec_module,args=(q,),kwargs=kwargs)
         t.start()
+        
+        #keep the UI updated. Not the best way
         while t.isAlive():
             QtGui.QApplication.processEvents()
         t.join()
         self.lc = q.get()
      
-
-        #self.lc =  self.run()
         self.window.progressBar.setVisible(False)
         self._set_button_enabled(True)
         if self.lc:

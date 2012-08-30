@@ -3,6 +3,7 @@ import os
 import inspect
 import sys
 
+#module shell contains the 'shell' of a module. i.e., just the information
 class module_shell(object):
     def __init__(self):
         self.name = ''
@@ -32,7 +33,7 @@ class module_loader(object):
                 shell.file_name = name
                 temp = None
                 # we need this information to populate the treeview in the main gui
-                #for the moment, assume ONE class per file
+                #class name MUST have mod_ in it
                 py_mod = imp.load_source( shell.file_name, shell.path )
                 for name,obj in inspect.getmembers(py_mod,inspect.isclass):
                     if 'mod_' in name:
@@ -46,11 +47,13 @@ class module_loader(object):
                 self.modules[shell.name] = shell
 
         return self.modules 	
+    
+    #loads a module
     def load(self,name,imported_files,generated_lc):
 
         py_mod = imp.load_source(self.modules[name].file_name, self.modules[name].path)
 
-        #for the moment, assume ONE class per file
+        #class name MUST have mod_ in the name
         for name,obj in inspect.getmembers(py_mod,inspect.isclass):
             if 'mod_' in name:
                 #instaniate this 
