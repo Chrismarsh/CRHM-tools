@@ -83,6 +83,7 @@ class mod_manclass(module_base):
         except:
             self.mbox_error('Invalid data in class table')
 
+        return None
  
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):

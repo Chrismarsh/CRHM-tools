@@ -36,7 +36,7 @@ class mod_hist(module_base):
             return kwargs
         except:
             self.mbox_error('Invalid field. Perhaps a field is empty?')
-        
+        return None
        
     
     #This is what can be called from the command line if wanted

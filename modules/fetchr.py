@@ -46,7 +46,7 @@ class mod_fetchR(module_base):
         except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')
         
-            return None
+        return None
     
     #This is what can be called from the command line if wanted
     #@profile

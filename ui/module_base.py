@@ -52,13 +52,17 @@ class module_base(QtGui.QDialog):
         if self.selected_file  == '':
             self.mbox_error('Could not find the selected file')
             return
+
+        kwargs = self.init_run()
+        
+        #bail if we have garbage
+        if kwargs == None:
+            return
         
         self.window.progressBar.setVisible(True)
         self.window.progressBar.setRange(0,0)
-        self.window.progressBar.reset#so it actually appears...
-        
+        self.window.progressBar.reset#so it actually appears...        
         self._set_button_enabled(False)
-        kwargs = self.init_run()
         q = Queue()
         def run_exec_module(q,**kwargs):
             q.put(self.exec_module(**kwargs))

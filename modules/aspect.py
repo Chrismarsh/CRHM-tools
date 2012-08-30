@@ -28,7 +28,7 @@ class mod_aspect(module_base):
             return kwargs
         except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')
-        
+        return None
 
     
     #This is what can be called from the command line if wanted

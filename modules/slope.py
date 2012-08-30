@@ -29,10 +29,11 @@ class mod_slope(module_base):
             
             kwargs={}
             kwargs['name']=name
+            return kwargs 
         except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')            
         
-        return kwargs    
+        return None   
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
