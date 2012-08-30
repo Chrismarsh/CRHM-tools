@@ -171,7 +171,7 @@
          <item>
           <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>Resoltuion</string>
+            <string>Spatial resolution</string>
            </property>
           </widget>
          </item>

@@ -16,6 +16,7 @@
 import numpy as np
 import gdal
 import matplotlib.pyplot as plt
+import copy
 gdal.UseExceptions() #enable exception handling
 
 class raster(object):
@@ -27,6 +28,9 @@ class raster(object):
         self._is_open = False
         self._file = ''
 
+    def copy(self):
+        copy.deepcopy(self)
+        
     
     def show(self,figure_handle):
         
@@ -36,28 +40,32 @@ class raster(object):
         
         
     def open(self,fname):
-        self._raw = gdal.Open(fname)
-        tmp = self._raw.GetRasterBand(1).ReadAsArray() 
-        self._no_data = self._raw.GetRasterBand(1).GetNoDataValue();
+        gdalr = gdal.Open(fname)
+        tmp = gdalr.GetRasterBand(1).ReadAsArray() 
+        self._no_data = gdalr.GetRasterBand(1).GetNoDataValue();
         self._raster = np.ma.masked_where(tmp == self._no_data, tmp)     
         
         self._is_open = True
         self._fname = fname
+        
+        self._xsize = gdalr.RasterXSize
+        self._ysize = gdalr.RasterYSize
+        geotransform = gdalr.GetGeoTransform()
+        self._resolution = [geotransform[1],geotransform[5]]
     def get_resolution(self):
-        geotransform = self._raw.GetGeoTransform()
-        return [geotransform[1],geotransform[5]]
+        return self._resolution
     
     #Returns the x size
     def xsize(self):
-        return self._raw.RasterXSize
+        return self._xsize
     #Returns the y size
     def ysize(self):
-        return self._raw.RasterYSize       
+        return self._ysize       
     def size(self):
-        return [self._raw.RasterYSize, self._raw.RasterXSize]    
+        return [self.ysize, self.xsize]    
     #Returns True is a raster has been loaded
     def is_open(self):
-        if self._raw is None:
+        if self._raster is None:
             return False
         else:
             return True
@@ -66,9 +74,6 @@ class raster(object):
     def get_raster(self):
         return self._raster
     
-    def get_gdalraster(self):
-        return self._raw
-
     def get_path(self):
         return self._fname
         

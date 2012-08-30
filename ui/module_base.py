@@ -35,17 +35,29 @@ class module_base(QtGui.QDialog):
         msgBox.setIcon(QtGui.QMessageBox.Critical) 
         msgBox.exec_()        
 
+    def _set_button_enabled(self,state):
+        self.window.btnCncl.setEnabled(state)
+        self.window.btnOk.setEnabled(state)
+        
     #return the selected file before handing off to the 'user' function
     def _Ok_pressed(self):
 
         file = self.window.filelist.currentText()
         file = file[file.find('[')+1:-1]   
-        self.selected_file = file
+        self.selected_file = ''
+        for f in self.files.items():
+            if f[1].get_path() == file:
+                self.selected_file = f[1]
+        
+        if self.selected_file  == '':
+            self.mbox_error('Could not find the selected file')
+            return
         
         self.window.progressBar.setVisible(True)
         self.window.progressBar.setRange(0,0)
         self.window.progressBar.reset#so it actually appears...
         
+        self._set_button_enabled(False)
         kwargs = self.init_run()
         q = Queue()
         def run_exec_module(q,**kwargs):
@@ -60,6 +72,7 @@ class module_base(QtGui.QDialog):
 
         #self.lc =  self.run()
         self.window.progressBar.setVisible(False)
+        self._set_button_enabled(True)
         if self.lc:
             self.window.close()
     

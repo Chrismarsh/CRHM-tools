@@ -18,6 +18,7 @@ import gdal
 import matplotlib.pyplot as plt
 gdal.UseExceptions() #enable exception handling
 from raster import *
+import copy
 
 class landclass(raster):
     """Defines the base characteristics of a land"""
@@ -31,7 +32,8 @@ class landclass(raster):
         self._creator='None'
         self._nclass=0
 
-    
+    def copy(self):
+            return copy.deepcopy(self)    
     def show(self,figure_handle,classified=True):
         
         if not classified:

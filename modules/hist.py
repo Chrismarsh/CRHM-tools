@@ -29,7 +29,7 @@ class mod_hist(module_base):
             if name == '':
                 raise Exception()
             kwargs={}
-            kwargs['file']=self.selected_file
+           
             kwargs['nbin']=nclasses
             kwargs['name']=name
             #call our main handler
@@ -42,10 +42,9 @@ class mod_hist(module_base):
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
         #create a new landclass
-        r = ct.terrain.landclass()
+        r = self.selected_file.copy()
+        r._name = kwargs['name']
         r.set_creator(self.name)
-        #open the file
-        r.open(kwargs['file'])
         
         #create the bins based on a histogram
         hist, edges = np.histogram(r.get_raster(), bins=kwargs['nbin'])               

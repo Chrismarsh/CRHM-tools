@@ -66,10 +66,8 @@ class mod_manclass(module_base):
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
         
-        #create a new landclass
-        r = ct.terrain.landclass()
-        #open the file
-        r.open(self.selected_file)        
+        r = self.selected_file.copy()
+        r._name = kwargs['name']
         r.set_creator(self.name)
         edges = []
         for i in range(0,self.window.tableWidget.rowCount()):

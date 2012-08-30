@@ -38,7 +38,6 @@ class mod_fetchR(module_base):
             direction = self.window.cb_direction.currentText()
             
             kwargs={}
-            kwargs['file']=self.selected_file
             kwargs['height']=height
             kwargs['name']=name
             kwargs['wind_dir']=direction
@@ -53,27 +52,25 @@ class mod_fetchR(module_base):
     #@profile
     def exec_module(self,**kwargs):
         #create a new landclass
-        r = ct.terrain.landclass()
-        r.set_creator(self.name)
+        r = self.selected_file.copy()
         r._name = kwargs['name']
-        #open the file
-        r.open(kwargs['file'])
+        r.set_creator(self.name)
+        
         fetch = np.zeros(r.xsize()*r.ysize()).reshape(r.ysize(),r.xsize())
         #hard-coded direction, fixup later
         direction = kwargs['wind_dir']
         elev = kwargs['height']
         
         
-        #self.window.progressBar.setRange(0,r.ysize())
-        #self.window.progressBar.setTextVisible(True)
+        self.window.progressBar.setRange(0,r.ysize())
+        self.window.progressBar.setTextVisible(True)
         
         #default views
         r_view = r._raster
         f_view = fetch        
         for i in range(0,r.ysize()):
             for j in range(0,r.xsize()):
-                
-                
+
                 if direction == 'N': #for NORTH
                     s=r._raster[:i,j][::-1] #[::-1] is because we are looking north, so need to flip the results, same for West
 
@@ -107,7 +104,7 @@ class mod_fetchR(module_base):
                     f_view[i,j] = s.size * r.get_resolution()[0]   
                 else:
                     f_view[i,j] = idx[0] * r.get_resolution()[0]   
-           # self.window.progressBar.setValue(i)
+            self.window.progressBar.setValue(i)
             
         r._raster = fetch
 

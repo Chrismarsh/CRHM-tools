@@ -28,7 +28,6 @@ class mod_slope(module_base):
             #call our main handler
             
             kwargs={}
-            kwargs['file']=self.selected_file
             kwargs['name']=name
         except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')            
@@ -37,12 +36,9 @@ class mod_slope(module_base):
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
-        #create a new landclass
-        r = ct.terrain.landclass()
-        #r.set_creator(self.name)
+        r = self.selected_file.copy()
         r._name = kwargs['name']
-        #open the file
-        r.open(kwargs['file'])
+        r.set_creator(self.name)
         
         p,q = np.gradient(r.get_raster(),1,1)
         
