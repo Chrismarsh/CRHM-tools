@@ -33,7 +33,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         super(MainWindow,self).__init__()
         self.setupUi(self)
-        self.setWindowTitle("CRHM Tools - 0.0.2a")
+        self.setWindowTitle("CRHM Tools - 0.0.3b")
         
         #initialize the member variables
         #---------------------------------
