@@ -41,7 +41,7 @@ class mod_hist(module_base):
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
-        #create a new landclass
+        #copy our landclass
         r = self.selected_file.copy()
         r._name = kwargs['name']
         r.set_creator(self.name)

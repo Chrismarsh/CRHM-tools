@@ -52,9 +52,30 @@ class mod_manclass(module_base):
             name = self.window.edit_name.text()
             if name == '':
                 raise ValueError()
+            
+            edges = []
+            for i in range(0,self.window.tableWidget.rowCount()):
+                start = self.window.tableWidget.item(i,0)
+                end = self.window.tableWidget.item(i,1)
+                
+                #empty list, so just insert
+                if len(edges) == 0:
+                    edges.append(int(start.text()))
+                    edges.append(int(end.text()))
+                else:
+                #However!! if we have something like 0-90, 90-360, we don't want to add the 90 twice
+                    prev = edges[-1]
+                    cstart = int(start.text()) 
+                    cend = int(end.text()) 
+                    if prev != cstart:
+                        edges.append(cstart)
+                    edges.append(cend)            
+
+
             kwargs={}
             kwargs['nbin']=nclasses
             kwargs['name']=name
+            kwargs['edges']=edges
             
             return kwargs          
         except ValueError:
@@ -69,25 +90,8 @@ class mod_manclass(module_base):
         r = self.selected_file.copy()
         r._name = kwargs['name']
         r.set_creator(self.name)
-        edges = []
-        for i in range(0,self.window.tableWidget.rowCount()):
-            start = self.window.tableWidget.item(i,0)
-            end = self.window.tableWidget.item(i,1)
-            
-            #empty list, so just insert
-            if len(edges) == 0:
-                edges.append(int(start.text()))
-                edges.append(int(end.text()))
-            else:
-            #However!! if we have something like 0-90, 90-360, we don't want to add the 90 twice
-                prev = edges[-1]
-                cstart = int(start.text()) 
-                cend = int(end.text()) 
-                if prev != cstart:
-                    edges.append(cstart)
-                edges.append(cend)
 
-        return ct.gis.classify(r,kwargs['nbin'],edges,kwargs['name'])
+        return ct.gis.classify(r,kwargs['nbin'],kwargs['edges'],kwargs['name'])
     
     
 

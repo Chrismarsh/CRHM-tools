@@ -33,11 +33,12 @@ class mod_aspect(module_base):
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
-        #create a new landclass
+        #get a copy of the selected file
         r = self.selected_file.copy()
         r._name = kwargs['name']
         r.set_creator(self.name)
         
+        #compute gradient
         p,q = np.gradient(r.get_raster())
 
         #http://webhelp.esri.com/arcgisdesktop/9.2/index.cfm?TopicName=How%20Aspect%20works
@@ -51,7 +52,6 @@ class mod_aspect(module_base):
         
         aspect[idx2] = 90 - aspect[idx2]
         
-        #aspect = 90 - aspect
         r._raster = aspect
         return r
     
