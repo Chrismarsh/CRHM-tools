@@ -5,10 +5,10 @@ from PySide import QtGui, QtCore,QtUiTools
 
     
 class mod_hist(module_base):
-    def __init__(self,imported_files):
+    def __init__(self,imported_files,generated_lc):
         
         #load the ui file
-        super(mod_hist,self).__init__(imported_files,'./modules/hist_ui.ui')
+        super(mod_hist,self).__init__(imported_files,generated_lc,'./modules/hist_ui.ui')
 
         self.name = 'Histogram partioning'
         self.version = '1.0'

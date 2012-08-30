@@ -72,7 +72,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def _modtree_run_module(self, item):
         try:
             name = self.mod_model.itemFromIndex(item).text()
-            module = self.loader.load(name, self.import_files)
+            module = self.loader.load(name, self.import_files,self.generated_lc)
             lc = module.show_ui()
             if lc != None:
                 self.generated_lc[lc.get_name()] = lc

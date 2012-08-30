@@ -5,10 +5,10 @@ from PySide import QtGui, QtCore,QtUiTools
 
     
 class mod_aspect(module_base):
-    def __init__(self,imported_files):
+    def __init__(self,imported_files,generated_lc):
         
         #load the ui file
-        super(mod_aspect,self).__init__(imported_files,'./modules/aspect_ui.ui')
+        super(mod_aspect,self).__init__(imported_files,generated_lc,'./modules/aspect_ui.ui')
 
         self.name = 'Aspect'
         self.version = '1.0'

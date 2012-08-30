@@ -37,7 +37,7 @@ class module_loader(object):
                 for name,obj in inspect.getmembers(py_mod,inspect.isclass):
                     if 'mod_' in name:
                         #instaniate this 
-                        temp = eval('py_mod.'+name+'(None)')
+                        temp = eval('py_mod.'+name+'(None,None)')
                 shell.name = temp.name
                 shell.version = temp.version
                 shell.description = temp.description
@@ -46,7 +46,7 @@ class module_loader(object):
                 self.modules[shell.name] = shell
 
         return self.modules 	
-    def load(self,name,imported_files):
+    def load(self,name,imported_files,generated_lc):
 
         py_mod = imp.load_source(self.modules[name].file_name, self.modules[name].path)
 
@@ -54,7 +54,7 @@ class module_loader(object):
         for name,obj in inspect.getmembers(py_mod,inspect.isclass):
             if 'mod_' in name:
                 #instaniate this 
-                mod = eval('py_mod.'+name+'(imported_files)')
+                mod = eval('py_mod.'+name+'(imported_files,generated_lc)')
                 return mod
         
         return None  

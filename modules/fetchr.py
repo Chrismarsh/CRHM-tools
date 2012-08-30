@@ -11,10 +11,10 @@ from scipy import weave
 #!     Lawrence W. Martz and David R. Lapen
 
 class mod_fetchR(module_base):
-    def __init__(self,imported_files):
+    def __init__(self,imported_files,generated_lc):
         
         #load the ui file
-        super(mod_fetchR,self).__init__(imported_files,'./modules/fetchr_ui.ui')
+        super(mod_fetchR,self).__init__(imported_files,generated_lc,'./modules/fetchr_ui.ui')
 
         self.name = 'FetchR'
         self.version = '1.0'

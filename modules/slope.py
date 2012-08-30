@@ -7,10 +7,10 @@ from PySide import QtGui, QtCore,QtUiTools
 
 
 class mod_slope(module_base):
-    def __init__(self,imported_files):
+    def __init__(self,imported_files,generated_lc):
         
         #load the ui file
-        super(mod_slope,self).__init__(imported_files,'./modules/slope_ui.ui')
+        super(mod_slope,self).__init__(imported_files,generated_lc,'./modules/slope_ui.ui')
 
         self.name = 'Slope'
         self.version = '1.0'

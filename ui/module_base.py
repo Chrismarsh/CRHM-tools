@@ -7,9 +7,10 @@ from Queue import Queue
 class module_base(QtGui.QDialog):
     #Imported_files list of the files that have been inported
     #ui_file the pyside .ui file to build the GUI for the module
-    def __init__(self,imported_files,ui_file):
+    def __init__(self,imported_files,generated_lc,ui_file):
         super(module_base,self).__init__()
         self.files = imported_files
+        self.gen_files = generated_lc
     
         #load the UI file
         file = QtCore.QFile(ui_file)
@@ -43,13 +44,22 @@ class module_base(QtGui.QDialog):
     def _Ok_pressed(self):
 
         file = self.window.filelist.currentText()
-        file = file[file.find('[')+1:-1]   
-        self.selected_file = ''
-        for f in self.files.items():
-            if f[1].get_path() == file:
-                self.selected_file = f[1]
+        idx = file.find('[')
+        if idx != -1:
+            file = file[0:idx].rstrip()
+        self.selected_file = None
+        #look for the file in imported files
+        for f in self.files:
+            if f == file:
+                self.selected_file = self.files[f]
         
-        if self.selected_file  == '':
+        if self.selected_file == None:
+            #let's try the user generated files
+            for f in self.gen_files:
+                if f == file:
+                    self.selected_file = self.gen_files[f]                
+        
+        if self.selected_file  == None:
             self.mbox_error('Could not find the selected file')
             return
 
@@ -86,6 +96,10 @@ class module_base(QtGui.QDialog):
         self.window.filelist.clear()
         for f in self.files:
             self.window.filelist.addItem( f + '  [' + self.files[f].get_path()+']' )      
+            self.window.filelist.addItem('--------')
+        for f in self.gen_files:
+            self.window.filelist.addItem(f)
+            
         self.window.setWindowTitle(self.name + ' - ' + str(self.version))
         #show the window
         self.window.exec_()

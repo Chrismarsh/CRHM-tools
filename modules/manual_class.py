@@ -5,10 +5,10 @@ from PySide import QtGui, QtCore,QtUiTools
 
     
 class mod_manclass(module_base):
-    def __init__(self,imported_files):
+    def __init__(self,imported_files,generated_lc):
         
         #load the ui file
-        super(mod_manclass,self).__init__(imported_files,'./modules/manual_class.ui')
+        super(mod_manclass,self).__init__(imported_files,generated_lc,'./modules/manual_class.ui')
 
         self.name = 'Manual partioning'
         self.version = '1.0'
