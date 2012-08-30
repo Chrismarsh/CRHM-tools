@@ -37,7 +37,10 @@ class raster(object):
         
     def open(self,fname):
         self._raw = gdal.Open(fname)
-        self._raster = np.array(self._raw.GetRasterBand(1).ReadAsArray())        
+        tmp = self._raw.GetRasterBand(1).ReadAsArray() 
+        self._no_data = self._raw.GetRasterBand(1).GetNoDataValue();
+        self._raster = np.ma.masked_where(tmp == self._no_data, tmp)     
+        
         self._is_open = True
         self._fname = fname
     def get_resolution(self):

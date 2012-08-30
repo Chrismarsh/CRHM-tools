@@ -3,7 +3,9 @@ import crhmtools as ct
 from ui.module_base import  *
 from PySide import QtGui, QtCore,QtUiTools 
 
-    
+
+
+
 class mod_slope(module_base):
     def __init__(self,imported_files):
         
@@ -16,7 +18,7 @@ class mod_slope(module_base):
         self.author = 'Chris Marsh'
         self.category = 'Terrain'
 
-    def run(self):
+    def init_run(self):
     
         try:
             #get the name from the edit widget
@@ -24,17 +26,20 @@ class mod_slope(module_base):
             if name == '':
                 raise ValueError()
             #call our main handler
-            return self.exec_module(file=self.selected_file, name=name)
+            
+            kwargs={}
+            kwargs['file']=self.selected_file
+            kwargs['name']=name
         except ValueError:
-            self.mbox_error('Invalid field. Perhaps a field is empty?')
+            self.mbox_error('Invalid field. Perhaps a field is empty?')            
         
-        return None
+        return kwargs    
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
         #create a new landclass
         r = ct.terrain.landclass()
-        r.set_creator(self.name)
+        #r.set_creator(self.name)
         r._name = kwargs['name']
         #open the file
         r.open(kwargs['file'])
@@ -44,7 +49,7 @@ class mod_slope(module_base):
         
         r._raster = np.arctan(np.sqrt(p**2 + q**2)) * 180.0/np.pi
         return r
-    
+
     
 
 

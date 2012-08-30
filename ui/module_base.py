@@ -1,5 +1,7 @@
 
-from PySide import QtGui, QtCore,QtUiTools 
+from PySide import QtGui, QtCore,QtUiTools
+from threading import Thread
+from Queue import Queue
 
 #Base class for GUI modules that abstracts away some of the setup
 class module_base(QtGui.QDialog):
@@ -23,6 +25,8 @@ class module_base(QtGui.QDialog):
         self.selected_file=''
 
         self.lc = None
+        self.window.progressBar.setVisible(False)
+        self.window.progressBar.setTextVisible(False)
     
     def mbox_error(self, string):
         msgBox = QtGui.QMessageBox()
@@ -30,6 +34,7 @@ class module_base(QtGui.QDialog):
         msgBox.setWindowTitle('Error')
         msgBox.setIcon(QtGui.QMessageBox.Critical) 
         msgBox.exec_()        
+
     #return the selected file before handing off to the 'user' function
     def _Ok_pressed(self):
 
@@ -37,8 +42,24 @@ class module_base(QtGui.QDialog):
         file = file[file.find('[')+1:-1]   
         self.selected_file = file
         
-        self.lc =  self.run()
+        self.window.progressBar.setVisible(True)
+        self.window.progressBar.setRange(0,0)
+        self.window.progressBar.reset#so it actually appears...
         
+        kwargs = self.init_run()
+        q = Queue()
+        def run_exec_module(q,**kwargs):
+            q.put(self.exec_module(**kwargs))
+        t = Thread(target=run_exec_module,args=(q,),kwargs=kwargs)
+        t.start()
+        while t.isAlive():
+            QtGui.QApplication.processEvents()
+        t.join()
+        self.lc = q.get()
+     
+
+        #self.lc =  self.run()
+        self.window.progressBar.setVisible(False)
         if self.lc:
             self.window.close()
     
@@ -51,4 +72,5 @@ class module_base(QtGui.QDialog):
         self.window.setWindowTitle(self.name + ' - ' + str(self.version))
         #show the window
         self.window.exec_()
+
         return self.lc

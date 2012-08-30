@@ -19,7 +19,7 @@ class mod_hist(module_base):
         #set a validator to the linedit so it only accepts integers
         v=QtGui.QIntValidator(1,999,self.window.lineEdit)
         self.window.lineEdit.setValidator(v)    
-    def run(self):
+    def init_run(self):
     
         try:
             #get the number of classes from the line edit widget
@@ -28,12 +28,16 @@ class mod_hist(module_base):
             name = self.window.edit_name.text()
             if name == '':
                 raise Exception()
+            kwargs={}
+            kwargs['file']=self.selected_file
+            kwargs['nbin']=nclasses
+            kwargs['name']=name
             #call our main handler
-            return self.exec_module(file=self.selected_file, nbin=nclasses, name=name)
+            return kwargs
         except:
             self.mbox_error('Invalid field. Perhaps a field is empty?')
         
-        return None
+       
     
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):

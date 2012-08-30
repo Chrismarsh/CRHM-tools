@@ -305,7 +305,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self._plot_imported(item.text())
         elif a.text() == 'Close':
             del self.import_files[item.text()]
-            self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+            self.lc_model.removeRow(item.row(),parent=item.parent().index()) 
+            if self.current_fig == item.text():
+                    self.mpl_widget.clear()
+                    self.current_fig_item = None
         elif a.text() == 'Show HRU':
             self._plot_hru()
         elif a.text() == 'Show classified':

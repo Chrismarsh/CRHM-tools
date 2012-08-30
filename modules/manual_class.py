@@ -43,7 +43,7 @@ class mod_manclass(module_base):
         if v.validate(item.text(),0)[0] == QtGui.QValidator.State.Invalid: #did our validator return an invalid vale?
             self.window.tableWidget.setItem(row,col,QtGui.QTableWidgetItem('0')) #just reset the cell to 0
             
-    def run(self):
+    def init_run(self):
         
         try:
             #get the number of classes from the line edit widget
@@ -52,15 +52,16 @@ class mod_manclass(module_base):
             name = self.window.edit_name.text()
             if name == '':
                 raise ValueError()
-            #call our main handler
-            return self.exec_module( nbin=nclasses,  name=name)            
+            kwargs={}
+            kwargs['nbin']=nclasses
+            kwargs['name']=name
+            
+            return kwargs          
         except ValueError:
             self.mbox_error('Invalid number of classes or blank name field')
         except:
             self.mbox_error('Invalid data in class table')
-            
-        return None
-        
+
  
     #This is what can be called from the command line if wanted
     def exec_module(self,**kwargs):
