@@ -18,6 +18,9 @@ class mod_slope(module_base):
         self.author = 'Chris Marsh'
         self.category = 'Terrain'
 
+        #set a validator to the linedit so it only accepts integers
+        v=QtGui.QIntValidator(1,999,self.window.radiusLineEdit)
+        self.window.radiusLineEdit.setValidator(v)   
     def init_run(self):
     
         try:
@@ -25,10 +28,11 @@ class mod_slope(module_base):
             name = self.window.edit_name.text()
             if name == '':
                 raise ValueError()
-            #call our main handler
-            
+
+            window = self.window.radiusLineEdit.text()
             kwargs={}
             kwargs['name']=name
+            kwargs['window']=window
             return kwargs 
         except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')            
@@ -40,8 +44,8 @@ class mod_slope(module_base):
         r = self.selected_file.copy()
         r._name = kwargs['name']
         r.set_creator(self.name)
-        
-        p,q = np.gradient(r.get_raster(),1,1)
+        window = int(kwargs['window'])
+        p,q = np.gradient(r.get_raster(),window,window)
         
         
         r._raster = np.arctan(np.sqrt(p**2 + q**2)) * 180.0/np.pi

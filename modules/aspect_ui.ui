@@ -50,6 +50,9 @@
    </item>
    <item>
     <layout class="QGridLayout" name="option_layout">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="edit_name"/>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
@@ -57,8 +60,15 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="edit_name"/>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="radiusLineEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Window size</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -16,6 +16,10 @@ class mod_aspect(module_base):
         self.author = 'Chris Marsh'
         self.category = 'Terrain'
 
+        #set a validator to the linedit so it only accepts integers
+        v=QtGui.QIntValidator(1,999,self.window.radiusLineEdit)
+        self.window.radiusLineEdit.setValidator(v)   
+        
     def init_run(self):
     
         try:
@@ -23,8 +27,10 @@ class mod_aspect(module_base):
             name = self.window.edit_name.text()
             if name == '':
                 raise ValueError()
+            window = self.window.radiusLineEdit.text()
             kwargs = {}
             kwargs['name']=name
+            kwargs['window']=window
             return kwargs
         except ValueError:
             self.mbox_error('Invalid field. Perhaps a field is empty?')
@@ -37,9 +43,9 @@ class mod_aspect(module_base):
         r = self.selected_file.copy()
         r._name = kwargs['name']
         r.set_creator(self.name)
-        
+        window = int(kwargs['window'])
         #compute gradient
-        p,q = np.gradient(r.get_raster())
+        p,q = np.gradient(r.get_raster(),window,window)
 
         #http://webhelp.esri.com/arcgisdesktop/9.2/index.cfm?TopicName=How%20Aspect%20works
         aspect = 180/np.pi * np.arctan2(q,-p)
