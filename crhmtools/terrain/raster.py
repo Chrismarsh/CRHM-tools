@@ -52,6 +52,10 @@ class raster(object):
         self._ysize = gdalr.RasterYSize
         geotransform = gdalr.GetGeoTransform()
         self._resolution = [geotransform[1],geotransform[5]]
+    
+    def get_no_data(self):
+        return self._no_data
+    
     def get_resolution(self):
         return self._resolution
     

@@ -34,10 +34,10 @@ class basin(object):
             a=range(1,self._landclass[c].get_nclasses()+1)
             comb.append(a)
             
-            if size == None:
-                size = self._landclass[c].size()
-            elif size != self._landclass[c].size():
-                raise Exception('Rasters are of a different size')
+            #if size == None:
+                #size = self._landclass[c].size()
+            #elif size != self._landclass[c].size():
+                #raise Exception('Rasters are of a different size')
             
         hrus = list(it.product(*comb))
         self._num_hrus = len(hrus)

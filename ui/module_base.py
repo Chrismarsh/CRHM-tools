@@ -2,7 +2,7 @@
 from PySide import QtGui, QtCore,QtUiTools
 from threading import Thread
 from Queue import Queue
-
+import time
 #Base class for GUI modules that abstracts away some of the setup
 class module_base(QtGui.QDialog):
     #Imported_files list of the files that have been inported
@@ -83,9 +83,12 @@ class module_base(QtGui.QDialog):
         t = Thread(target=run_exec_module,args=(q,),kwargs=kwargs)
         t.start()
         
+
         #keep the UI updated. Not the best way
         while t.isAlive():
             QtGui.QApplication.processEvents()
+            time.sleep(0.1)
+          
         t.join()
         self.lc = q.get()
      
@@ -100,7 +103,8 @@ class module_base(QtGui.QDialog):
         self.window.filelist.clear()
         for f in self.files:
             self.window.filelist.addItem( f + '  [' + self.files[f].get_path()+']' )      
-            self.window.filelist.addItem('--------')
+        
+        self.window.filelist.addItem('--------')
         for f in self.gen_files:
             self.window.filelist.addItem(f)
             

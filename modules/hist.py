@@ -47,7 +47,8 @@ class mod_hist(module_base):
         r.set_creator(self.name)
         
         #create the bins based on a histogram
-        hist, edges = np.histogram(r.get_raster(), bins=kwargs['nbin'])               
+        hist, edges = np.histogram(r.get_raster().compressed(), bins=kwargs['nbin'])        #by default, histogram includes masked data
+        #http://stackoverflow.com/questions/3610040/how-to-create-the-histogram-of-an-array-with-masked-values-in-numpy
 
         return ct.gis.classify(r,kwargs['nbin'],edges,kwargs['name'])
     

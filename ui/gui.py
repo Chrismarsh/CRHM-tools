@@ -242,6 +242,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         it = parent.appendRow(item)
         self.lc_treeview.expand(parent.index())           
         
+        if self.current_fig == '':
+            self.plot(name,self.import_files[name]._raster)
+        
 
     #rightclick context menu for the landclass treeview
     def _context_menu(self,position):

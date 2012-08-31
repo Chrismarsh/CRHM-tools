@@ -3,6 +3,7 @@ import crhmtools as ct
 from ui.module_base import  *
 from PySide import QtGui, QtCore,QtUiTools 
 from scipy import weave
+import datetime, time
 #Base oned code from FetchR:
 #! Original program written March 1990; current version written June 1992.
 #! Resurrected July 2008
@@ -56,7 +57,8 @@ class mod_fetchR(module_base):
         r._name = kwargs['name']
         r.set_creator(self.name)
         
-        fetch = np.zeros(r.xsize()*r.ysize()).reshape(r.ysize(),r.xsize())
+        #fetch = np.zeros(r.xsize()*r.ysize()).reshape(r.ysize(),r.xsize())
+        fetch = r._raster.copy()
         #hard-coded direction, fixup later
         direction = kwargs['wind_dir']
         elev = kwargs['height']
@@ -68,9 +70,12 @@ class mod_fetchR(module_base):
         #default views
         r_view = r._raster
         f_view = fetch        
+        
+        now = time.time()
         for i in range(0,r.ysize()):
+            tstart = time.time()
             for j in range(0,r.xsize()):
-
+                
                 if direction == 'N': #for NORTH
                     s=r._raster[:i,j][::-1] #[::-1] is because we are looking north, so need to flip the results, same for West
 
@@ -99,13 +104,19 @@ class mod_fetchR(module_base):
                 elif direction == 'NW':
                     s = r._raster.diagonal(j-i)[:i]
                 
-                idx = np.where( (s < r_view[i,j]+elev)==False)[0]
-                if idx.size == 0: #no false found, so all true
-                    f_view[i,j] = s.size * r.get_resolution()[0]   
-                else:
-                    f_view[i,j] = idx[0] * r.get_resolution()[0]   
+                if r_view[i,j] != r.get_no_data():
+                    idx = np.where( (s < r_view[i,j]+elev)==False)[0]
+                    if idx.size == 0: #no false found, so all true
+                        f_view[i,j] = s.size * r.get_resolution()[0]   
+                    else:
+                        f_view[i,j] = idx[0] * r.get_resolution()[0]   
+                        
             self.window.progressBar.setValue(i)
-            
+            tend = time.time() - tstart 
+            left = datetime.timedelta(seconds=(r.ysize()-i)*tend)
+            t=str(left)
+            #self.window.label_5.setText(t[:t.find('.')])
+            self.window.label_5.setText(t)
         r._raster = fetch
 
         return r
