@@ -103,10 +103,16 @@ class module_base(QtGui.QDialog):
         self.window.filelist.clear()
         for f in self.files:
             self.window.filelist.addItem( f + '  [' + self.files[f].get_path()+']' )      
-        
-        self.window.filelist.addItem('--------')
-        for f in self.gen_files:
-            self.window.filelist.addItem(f)
+
+        if len(self.gen_files) >0:
+            idx = len(self.files) #seperator at the end of the previous items
+            self.window.filelist.insertSeparator(idx) #the seperator is kinda puny, so just add a few to thicken it up
+            self.window.filelist.insertSeparator(idx)
+            self.window.filelist.insertSeparator(idx)
+            self.window.filelist.insertSeparator(idx)
+            
+            for f in self.gen_files:
+                self.window.filelist.addItem(f)
             
         self.window.setWindowTitle(self.name + ' - ' + str(self.version))
         #show the window

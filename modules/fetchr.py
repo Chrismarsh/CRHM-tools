@@ -115,7 +115,7 @@ class mod_fetchR(module_base):
             tend = time.time() - tstart 
             left = datetime.timedelta(seconds=(r.ysize()-i)*tend)
             t=str(left)
-            #self.window.label_5.setText(t[:t.find('.')])
+            #self.window.label_5.setText(t[:t.find('.')])  #this is damn slow, why?
             self.window.label_5.setText(t)
         r._raster = fetch
 
