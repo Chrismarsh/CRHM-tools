@@ -138,7 +138,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.treeView.doubleClicked.connect(self._modtree_run_module)
         #connect single click event to the .description of the module and show it
         self.treeView.clicked.connect(self._modtree_show_tip)
-
+        #sort the tree
+        self.treeView.sortByColumn(0,Qt.AscendingOrder)
 
     #set up the matplotlib view
     def _init_mpl_view(self):
