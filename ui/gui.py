@@ -245,7 +245,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         
         if self.current_fig == '':
             self.plot(name,self.import_files[name]._raster)
-        
+            item.setData(1,QtCore.Qt.UserRole) #bold the item
+            self.current_fig_item = item         #save the item so we can easily unbold it
+            
 
     #rightclick context menu for the landclass treeview
     def _context_menu(self,position):

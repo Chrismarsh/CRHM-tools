@@ -6,7 +6,7 @@ import PySide.QtGui as QtGui
 class BoldDelegate(QtGui.QStyledItemDelegate):
 
     def paint(self, painter, option, index):
-        if index.data(QtCore.Qt.UserRole) == 1:
+        if index.data(QtCore.Qt.UserRole) == 1: 
             option.font.setWeight(QtGui.QFont.Bold)
             
         QtGui.QStyledItemDelegate.paint(self, painter, option, index)    
@@ -19,33 +19,34 @@ class LCTreeViewModel(QtGui.QStandardItemModel):
     def mimeData(self, indexes):
         i = indexes[0]
         md = QtCore.QMimeData()
-        md.setText(i.data()+':'+self.itemFromIndex(i).parent().text())
+        md.setText(i.data()+':'+self.itemFromIndex(i).parent().text()) #just the name + parent to use in the drop to filter out acceptable drops
         return md
         
     def mimeTypes(self):
         return ['text/plain']
+    
+    
     def dropMimeData(self, data, action, row, column, parent):
 
-
-        
-        pos = data.text().find(':')
+        pos = data.text().find(':') #we are cheating here, the start drag appends the parent to the end of the name so we know where it comes from
         
         item = QtGui.QStandardItem(data.text()[:pos])
         p = self.itemFromIndex(parent) # get the real parent
         
+        #don't allow dropping onto these
         if 'Imported files' in data.text() and p.text() != 'Secondary land classes':
             return False        
-        #findItem is not working, not sure why
-        #but make sure we aren't dropping the same thing 
 
+        #findItem is not working, not sure why
+        #but make sure we aren't dropping an existing item
         for i in range(0,p.rowCount()):
             if p.child(i).text() == data.text():
                 return False
         item.setDropEnabled(False)
-        #item.setDragEnabled(False)
         p.appendRow(item)
         return True
     
+    #insert into the tree at the root
     def insert_at_root(self, item, drag=False, drop=False):
         item = QtGui.QStandardItem(item)
         item.setDragEnabled(drag)
