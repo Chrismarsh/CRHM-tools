@@ -328,16 +328,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                 prop = Properties(self.import_files[item.text()])
             prop.window.exec_()
         elif a.text() == 'Remove':
-            if index.data() == 'Primary land classes' or index.data() == 'From functions':
-                #remove plot if we are currently showing it
-                if self.current_fig == item.text():
-                    self.mpl_widget.clear()
-                    self.current_fig_item = None
-               
-                self.lc_model.removeRow(item.row(),parent=item.parent().index())   
 
-            elif index.data() == 'Secondary land classes':
-                self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+            #remove plot if we are currently showing it
+            if self.current_fig == item.text():
+                self.mpl_widget.clear()
+                self.current_fig_item = None
+
+            if index.data() == 'From functions':
+                del self.generated_lc[item.text()]
+            
+            self.lc_model.removeRow(item.row(),parent=item.parent().index())   
+            
+            
                 
         elif a.text() == 'Generate HRUs from primary':
             self._gen_hrus()
