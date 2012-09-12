@@ -41,11 +41,11 @@ class basin(object):
             
         hrus = list(it.product(*comb))
         self._num_hrus = len(hrus)
-        stack = np.dstack(([r.get_classraster() for r in self._landclass.values()]))
+        stack = np.ma.dstack(([r.get_classraster() for r in self._landclass.values()]))
 
         #do the classification
-        self._hrus = (np.array([np.array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
-                 (2 + np.arange(len(hrus)))[:, None, None]).max(axis=0) - 1       
+        self._hrus = (np.ma.masked_array([np.ma.masked_array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
+                 (2 + np.ma.arange(len(hrus)))[:, None, None]).max(axis=0) - 1       
     
     def show(self):
         
