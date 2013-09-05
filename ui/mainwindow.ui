@@ -57,21 +57,14 @@
     </property>
     <addaction name="actionHRU_paramaters"/>
    </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="actionHelp"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
-   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_3">
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>

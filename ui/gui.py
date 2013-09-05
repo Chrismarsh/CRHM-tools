@@ -27,13 +27,14 @@ from lctreeview import *
 from hru_details import *
 from properties import *
 
+
 class MainWindow(QMainWindow,Ui_MainWindow):
 
     def __init__(self):
 
         super(MainWindow,self).__init__()
         self.setupUi(self)
-        self.setWindowTitle("CRHM Tools - 0.0.3b")
+        self.setWindowTitle("CRHM Tools - 0.0.4b")
         
         #initialize the member variables
         #---------------------------------
@@ -46,7 +47,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         #--------------------------------
         #load the dynamic modules
         self.loader = module_loader()
-        self.loader.enumerate(os.path.join(os.getcwd(),'modules'))              
+        p =os.getcwd()
+        self.loader.enumerate(os.path.join(p,'modules'))              
        
        
         #need to do the mpl init here otherwise it doesn't take up the full central widget
@@ -140,6 +142,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.treeView.clicked.connect(self._modtree_show_tip)
         #sort the tree
         self.treeView.sortByColumn(0,Qt.AscendingOrder)
+        
+        
 
     #set up the matplotlib view
     def _init_mpl_view(self):
@@ -186,6 +190,16 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def _gen_hrus(self):
         self.statusBar.showMessage('Creating HRUs...')
 
+        if self.basin._hrus != None:
+            #reset the basin
+            del self.basin
+            self.basin = ct.terrain.basin()  
+            
+            parent = self.lc_model.findItems('Generated HRUs').pop()
+            parent.removeRow(0)
+                  
+        
+        
         p = self.lc_model.findItems('Primary land classes').pop()
         
         for i in range(0,p.rowCount()):
@@ -210,6 +224,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         parent = self.lc_model.findItems('Generated HRUs').pop()
         parent.appendRow(QStandardItem('HRU'))
         self.statusBar.showMessage('Done')
+        
+        #self.actionGenerate_HRUs.setEnabled(False)
 
     #import a raster file 
     def _import_file(self):
@@ -264,9 +280,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             while index.parent().isValid():
                 index = index.parent()
                 level += 1                
-        if level == 0 and item.text() == 'Generated HRUs':
-            menu.addAction('Generate HRUs from primary')
-        elif level == 0 and item.text() == 'Imported files':
+        #if level == 0 and item.text() == 'Generated HRUs':
+            #menu.addAction('Generate HRUs from primary')
+        if level == 0 and item.text() == 'Imported files':
             menu.addAction('Import file')
         elif level == 1:
             if index.data() == 'Generated HRUs':
@@ -311,10 +327,12 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self._plot_imported(item.text())
         elif a.text() == 'Close':
             del self.import_files[item.text()]
-            self.lc_model.removeRow(item.row(),parent=item.parent().index()) 
+            
             if self.current_fig == item.text():
                     self.mpl_widget.clear()
                     self.current_fig_item = None
+            
+            self.lc_model.removeRow(item.row(),parent=item.parent().index()) 
         elif a.text() == 'Show HRU':
             self._plot_hru()
         elif a.text() == 'Show classified':

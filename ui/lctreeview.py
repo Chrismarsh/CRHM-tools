@@ -36,7 +36,7 @@ class LCTreeViewModel(QtGui.QStandardItemModel):
         #don't allow dropping onto these
         if 'Imported files' in data.text() and p.text() != 'Secondary land classes':
             return False        
-
+        
         #findItem is not working, not sure why
         #but make sure we aren't dropping an existing item
         for i in range(0,p.rowCount()):

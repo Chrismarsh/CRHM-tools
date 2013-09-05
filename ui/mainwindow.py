@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Aug 14 18:46:22 2012
+# Created: Wed Sep 04 18:21:55 2013
 #      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,14 +37,12 @@ class Ui_MainWindow(object):
         self.menuTools.setObjectName("menuTools")
         self.menuView = QtGui.QMenu(self.menuBar)
         self.menuView.setObjectName("menuView")
-        self.menuHelp = QtGui.QMenu(self.menuBar)
-        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtGui.QStatusBar(MainWindow)
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
         self.dockWidget_3 = QtGui.QDockWidget(MainWindow)
-        self.dockWidget_3.setFeatures(QtGui.QDockWidget.DockWidgetFloatable)
+        self.dockWidget_3.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.dockWidget_3.setObjectName("dockWidget_3")
         self.dockWidgetContents_3 = QtGui.QWidget()
         self.dockWidgetContents_3.setObjectName("dockWidgetContents_3")
@@ -104,11 +102,9 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionClose)
         self.menuTools.addAction(self.actionGenerate_HRUs)
         self.menuView.addAction(self.actionHRU_paramaters)
-        self.menuHelp.addAction(self.actionHelp)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuView.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
-        self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
@@ -119,7 +115,6 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "Tools", None, QtGui.QApplication.UnicodeUTF8))
         self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "View", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Basin", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Functions", None, QtGui.QApplication.UnicodeUTF8))
         self.actionClose.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))

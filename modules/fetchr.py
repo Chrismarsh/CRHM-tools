@@ -2,7 +2,7 @@ import numpy as np
 import crhmtools as ct
 from ui.module_base import  *
 from PySide import QtGui, QtCore,QtUiTools 
-from scipy import weave
+#from scipy import weave
 import datetime, time
 #Base oned code from FetchR:
 #! Original program written March 1990; current version written June 1992.
