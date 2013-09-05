@@ -1,7 +1,10 @@
 CRHM-tools
 ==========
 
-Python/QT front-end for the [Cold Regions Hydrologic Model (CRHM)](http://www.usask.ca/hydrology/CRHM.php) to generate HRUs from specified terrain classes.
+Python/QT front-end for the [Cold Regions Hydrologic Model (CRHM)](http://www.usask.ca/hydrology/CRHM.php) to generate HRUs from specified terrain classes. 
+
+It is an automated and systematic way for the creation of basin relationships for input to CRHM. Generated HRUs are less subjective and human-errors are limited, facilitating a more robust model creation. Other HRU generation approaches exist, such as GRASS-HRU, however CRHM-Tools differs as it is both an HRU creation tool as well as a parametrization tool. In addition, HRUs may be generated based on physical process characteristics such as fetch. By allowing for the parametrization of CRHM, tighter coupling between the input and the outputs is possible.
+
 
 <img src="https://raw.github.com/Chrismarsh/CRHM-tools/master/Screenshot_1.png" width="95%">
 
@@ -14,9 +17,10 @@ Depends
 - Numpy and SciPy
 - GDAL
 
+
 A python distribution such as [Enthought Python](http://www.enthought.com/products/epd.php) installs all the prerequisits. 
 
-Only tested with x64 python, but should work with x86. 
+Tested with x64 and x86 Python. 
 
 Tested on Win7x64 and OSX 10.7
 
