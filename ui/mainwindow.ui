@@ -41,7 +41,15 @@
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuSave">
+     <property name="title">
+      <string>Save</string>
+     </property>
+     <addaction name="actionHRU_raster"/>
+     <addaction name="actionHRU_parameters"/>
+    </widget>
     <addaction name="actionImport_file"/>
+    <addaction name="menuSave"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
@@ -176,6 +184,16 @@
   <action name="actionHelp">
    <property name="text">
     <string>Help</string>
+   </property>
+  </action>
+  <action name="actionHRU_raster">
+   <property name="text">
+    <string>HRU raster</string>
+   </property>
+  </action>
+  <action name="actionHRU_parameters">
+   <property name="text">
+    <string>HRU parameters</string>
    </property>
   </action>
  </widget>

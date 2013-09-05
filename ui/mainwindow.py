@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Sep 04 18:21:55 2013
-#      by: pyside-uic 0.2.14 running on PySide 1.1.1
+# Created: Thu Sep 05 23:44:29 2013
+#      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -33,6 +33,8 @@ class Ui_MainWindow(object):
         self.menuBar.setObjectName("menuBar")
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName("menuFile")
+        self.menuSave = QtGui.QMenu(self.menuFile)
+        self.menuSave.setObjectName("menuSave")
         self.menuTools = QtGui.QMenu(self.menuBar)
         self.menuTools.setObjectName("menuTools")
         self.menuView = QtGui.QMenu(self.menuBar)
@@ -97,7 +99,14 @@ class Ui_MainWindow(object):
         self.actionAbout.setObjectName("actionAbout")
         self.actionHelp = QtGui.QAction(MainWindow)
         self.actionHelp.setObjectName("actionHelp")
+        self.actionHRU_raster = QtGui.QAction(MainWindow)
+        self.actionHRU_raster.setObjectName("actionHRU_raster")
+        self.actionHRU_parameters = QtGui.QAction(MainWindow)
+        self.actionHRU_parameters.setObjectName("actionHRU_parameters")
+        self.menuSave.addAction(self.actionHRU_raster)
+        self.menuSave.addAction(self.actionHRU_parameters)
         self.menuFile.addAction(self.actionImport_file)
+        self.menuFile.addAction(self.menuSave.menuAction())
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menuTools.addAction(self.actionGenerate_HRUs)
@@ -113,6 +122,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuSave.setTitle(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "Tools", None, QtGui.QApplication.UnicodeUTF8))
         self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "View", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Basin", None, QtGui.QApplication.UnicodeUTF8))
@@ -126,5 +136,7 @@ class Ui_MainWindow(object):
         self.actionHRU_paramaters.setText(QtGui.QApplication.translate("MainWindow", "HRU paramaters", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout.setText(QtGui.QApplication.translate("MainWindow", "About", None, QtGui.QApplication.UnicodeUTF8))
         self.actionHelp.setText(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHRU_raster.setText(QtGui.QApplication.translate("MainWindow", "HRU raster", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHRU_parameters.setText(QtGui.QApplication.translate("MainWindow", "HRU parameters", None, QtGui.QApplication.UnicodeUTF8))
 
 from lctreeview import LCTreeView

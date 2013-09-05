@@ -44,9 +44,13 @@ class basin(object):
         stack = np.ma.dstack(([r.get_classraster() for r in self._landclass.values()]))
 
         #do the classification
-        self._hrus = (np.ma.masked_array([np.ma.masked_array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
+        hrus = (np.ma.masked_array([np.ma.masked_array(h)[...,:] == stack for h in hrus]).all(axis = -1) *
                  (2 + np.ma.arange(len(hrus)))[:, None, None]).max(axis=0) - 1       
     
+        self._hrus = copy.copy(self._landclass.iteritems().next()[1]) #just copy the first raster, doesn't matter what it is
+        self._hrus._raster = hrus
+        self._hrus.__class__ = raster
+        
     def show(self):
         
         nclasses = len(self._landclass)

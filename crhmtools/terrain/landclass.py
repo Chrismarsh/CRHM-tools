@@ -69,7 +69,6 @@ class landclass(raster):
     def get_nclasses(self):
         return self._nclass
     
-    def save_to_file(self,fname):
-        pass
+    
     
     

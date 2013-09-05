@@ -18,6 +18,8 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtUiTools import *
 
+import gdal
+from gdalconst import *
 
 from mainwindow import *
 import mpl_view 
@@ -162,6 +164,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.actionClose.triggered.connect(self.close)
         
         self.actionHRU_paramaters.triggered.connect(self._open_hru_details)
+        
+        self.actionHRU_raster.triggered.connect(self._save_hru_to_raster)
+        self.actionHRU_parameters.triggered.connect(self._save_hru_params)
 
     #set the layouts
     def _set_layout(self):
@@ -382,7 +387,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def _plot_hru(self):
         ticks = range(1,self.basin.get_num_hrus()+1)
         labels = ['HRU ' + str(i) for i in ticks]
-        self.plot('hrus',self.basin._hrus,ticks,labels)
+        self.plot('hrus',self.basin._hrus._raster,ticks,labels)
         
     #show the imported file
     def _plot_imported(self, name):
@@ -401,3 +406,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.plot(name,r)
 
 
+    def _save_hru_to_raster(self):
+        if self.basin.get_num_hrus() != 0:
+            fname = QFileDialog.getSaveFileName(self, caption="Save Raster",  filter="Raster Files (*.tif)")            
+            self.basin._hrus.save_to_file(fname[0])
+    
+    def _save_hru_params(self):
+        return False

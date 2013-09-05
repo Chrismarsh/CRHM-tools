@@ -15,6 +15,7 @@
 
 import numpy as np
 import gdal
+from gdalconst import *
 import matplotlib.pyplot as plt
 import copy
 gdal.UseExceptions() #enable exception handling
@@ -82,7 +83,12 @@ class raster(object):
         return self._fname
         
     def save_to_file(self,fname):
-        pass
+        
+        driver = gdal.GetDriverByName('GTiff')
+        ds = driver.Create(fname, self.xsize() , self.ysize() , 1, GDT_Float32)
+
+        band = ds.GetRasterBand(1)
+        band.WriteArray(self._raster, 0, 0)
     
     def __call__(self,row,col):
         return self._raster[x,y]
