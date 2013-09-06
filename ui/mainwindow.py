@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Thu Sep 05 23:44:29 2013
+# Created: Fri Sep 06 17:58:51 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -103,7 +103,10 @@ class Ui_MainWindow(object):
         self.actionHRU_raster.setObjectName("actionHRU_raster")
         self.actionHRU_parameters = QtGui.QAction(MainWindow)
         self.actionHRU_parameters.setObjectName("actionHRU_parameters")
+        self.actionHRU_vector = QtGui.QAction(MainWindow)
+        self.actionHRU_vector.setObjectName("actionHRU_vector")
         self.menuSave.addAction(self.actionHRU_raster)
+        self.menuSave.addAction(self.actionHRU_vector)
         self.menuSave.addAction(self.actionHRU_parameters)
         self.menuFile.addAction(self.actionImport_file)
         self.menuFile.addAction(self.menuSave.menuAction())
@@ -138,5 +141,6 @@ class Ui_MainWindow(object):
         self.actionHelp.setText(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.actionHRU_raster.setText(QtGui.QApplication.translate("MainWindow", "HRU raster", None, QtGui.QApplication.UnicodeUTF8))
         self.actionHRU_parameters.setText(QtGui.QApplication.translate("MainWindow", "HRU parameters", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHRU_vector.setText(QtGui.QApplication.translate("MainWindow", "HRU vector", None, QtGui.QApplication.UnicodeUTF8))
 
 from lctreeview import LCTreeView

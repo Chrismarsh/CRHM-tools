@@ -15,6 +15,7 @@
 
 import numpy as np
 import gdal
+import ogr
 from gdalconst import *
 import matplotlib.pyplot as plt
 import copy
@@ -83,13 +84,39 @@ class raster(object):
         return self._fname
         
     def save_to_file(self,fname):
-        
+          
         driver = gdal.GetDriverByName('GTiff')
+ 
         ds = driver.Create(fname, self.xsize() , self.ysize() , 1, GDT_Float32)
 
         band = ds.GetRasterBand(1)
         band.WriteArray(self._raster, 0, 0)
-    
+
+
+    def save_to_vector(self, fname):
+        #create a temporary gdal raster to read from
+        mem_driver = gdal.GetDriverByName('MEM')
+        mem_ds = mem_driver.Create('', self.xsize() , self.ysize() , 1, GDT_Float32)
+        
+        src_band = mem_ds.GetRasterBand(1)
+        src_band.WriteArray(self._raster, 0, 0)
+        
+        #convert to vector
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+        dst_ds = driver.CreateDataSource( fname )
+        
+        dst_layer = dst_ds.CreateLayer('HRUs')
+        
+        fd = ogr.FieldDefn( 'DN', ogr.OFTInteger )
+        dst_layer.CreateField( fd )
+        dst_field = 0        
+        
+        prog_func = gdal.TermProgress
+        options=[]
+        #result = gdal.Polygonize( src_band, None, dst_layer, 0 )
+        result = gdal.Polygonize( src_band, None, dst_layer, dst_field, options,callback = prog_func )        
+
+
     def __call__(self,row,col):
         return self._raster[x,y]
     

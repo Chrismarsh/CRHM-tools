@@ -46,6 +46,7 @@
       <string>Save</string>
      </property>
      <addaction name="actionHRU_raster"/>
+     <addaction name="actionHRU_vector"/>
      <addaction name="actionHRU_parameters"/>
     </widget>
     <addaction name="actionImport_file"/>
@@ -194,6 +195,11 @@
   <action name="actionHRU_parameters">
    <property name="text">
     <string>HRU parameters</string>
+   </property>
+  </action>
+  <action name="actionHRU_vector">
+   <property name="text">
+    <string>HRU vector</string>
    </property>
   </action>
  </widget>
