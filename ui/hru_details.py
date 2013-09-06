@@ -25,7 +25,7 @@ class HRUDetails(QtGui.QMainWindow):
         #setup the grid
         nhru = self.basin.get_num_hrus()
         self.window.tableWidget.setColumnCount(nhru)
-        self.window.tableWidget.setRowCount(len(self.slc))
+        self.window.tableWidget.setRowCount(len(self.slc)+1) #+1 to account for the extra line for the area
         
         for i in range(0,nhru):
             header = QtGui.QTableWidgetItem('HRU ' + str(i+1))
@@ -36,6 +36,10 @@ class HRUDetails(QtGui.QMainWindow):
             header = QtGui.QTableWidgetItem('Mean of ' + self.slc[i])
             self.window.tableWidget.setVerticalHeaderItem(i,header)   
         
+        header = QtGui.QTableWidgetItem('Area (m^2)')
+        self.window.tableWidget.setVerticalHeaderItem(len(self.slc),header)   
+        
+        #calculate the mean for each HRU
         for i in range(0,nhru):
             for j in range(0,len(self.slc)):
                 try:
@@ -45,6 +49,14 @@ class HRUDetails(QtGui.QMainWindow):
                     
                 item = QtGui.QTableWidgetItem('{0:.2f}'.format(mean))
                 self.window.tableWidget.setItem(j,i,item) #intentional i,j flip here
+        
+        #calculate the area of each HRU
+        for i in range(0,nhru):
+            total = (self.basin._hrus._raster  == i+1).sum()
+            total = total * abs(self.basin._hrus.get_resolution()[0]*self.basin._hrus.get_resolution()[1]) / 10**6 # to km^2
+                
+            item = QtGui.QTableWidgetItem('{0:.2f}'.format(total))
+            self.window.tableWidget.setItem(len(self.slc),i,item) #intentional i,j flip here        
 
         self.window.show()
         

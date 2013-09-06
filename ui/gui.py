@@ -412,11 +412,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if self.basin.get_num_hrus() != 0:
             fname = QFileDialog.getSaveFileName(self, caption="Save Raster",  filter="Raster Files (*.tif)")            
             self.basin._hrus.save_to_file(fname[0])
+        else:
+            self.statusBar.showMessage('No current HRUs')
             
     def _save_hru_to_vector(self):
         if self.basin.get_num_hrus() != 0:
                     fname = QFileDialog.getSaveFileName(self, caption="Save Vector",  filter="Vector Files (*.shp)")            
                     self.basin._hrus.save_to_vector(fname[0])  
+        else:
+                    self.statusBar.showMessage('No current HRUs')        
                     
     def _save_hru_params(self):
         return False
