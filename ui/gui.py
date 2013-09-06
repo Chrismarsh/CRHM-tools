@@ -431,7 +431,13 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def _save_hru_params(self):
         if self.basin.get_num_hrus() != 0:
             fname = QFileDialog.getSaveFileName(self, caption="Save Parameters",  filter="CSV Files (*.csv)")  
-            f = open (fname[0], 'w')
+            try:
+                f = open (fname[0], 'w')
+            except Exception as e:
+                msg = QMessageBox()
+                msg.setText(str(e))
+                msg.exec_()
+                return
         else:
             self.statusBar.showMessage('No current HRUs')
             return
@@ -443,21 +449,25 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             f.write('HRU ' + str(i+1) +',')
         f.write('\n')
             
-        for i in range(0,len(secondary_lc)):
-            f.write('Mean of ' + secondary_lc[i]+',')            
-            for j in range(0,len(secondary_lc)):
+
+        
+        for j in range(0,len(secondary_lc)):
+            f.write('Mean of ' + secondary_lc[j]+',')    
+            
+            for i in range(0,nhru):
                     try:
                         mean = np.mean(self.import_files[secondary_lc[j]].get_raster()[self.basin._hrus._raster   == i+1])
                     except:
                         mean = np.mean(self.generated_lc[secondary_lc[j]].get_raster()[self.basin._hrus._raster   == i+1])
                         
                     item = '{0:.2f}'.format(mean)
-                    f.write(item+',')   
+                    f.write(item+',')  
+
             f.write('\n')  
         
-        f.write('\n')    
+ 
             
-        f.write('Area (m^2),')
+        f.write('Area (km^2),')
         #calculate the area of each HRU
         for i in range(0,nhru):
             total = (self.basin._hrus._raster  == i+1).sum()

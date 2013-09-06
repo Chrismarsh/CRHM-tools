@@ -37,7 +37,7 @@ class HRUDetails(QtGui.QMainWindow):
             header = QtGui.QTableWidgetItem('Mean of ' + self.slc[i])
             self.window.tableWidget.setVerticalHeaderItem(i,header)   
         
-        header = QtGui.QTableWidgetItem('Area (m^2)')
+        header = QtGui.QTableWidgetItem('Area (km^2)')
         self.window.tableWidget.setVerticalHeaderItem(len(self.slc),header)   
         
         #calculate the mean for each HRU
