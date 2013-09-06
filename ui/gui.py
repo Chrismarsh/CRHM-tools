@@ -428,6 +428,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         else:
                     self.statusBar.showMessage('No current HRUs')        
                     
+    #save paramters to csv   
     def _save_hru_params(self):
         if self.basin.get_num_hrus() != 0:
             fname = QFileDialog.getSaveFileName(self, caption="Save Parameters",  filter="CSV Files (*.csv)")  
@@ -479,3 +480,5 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         f.write('\n')    
         f.close()
+
+    
