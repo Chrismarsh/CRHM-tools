@@ -180,7 +180,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.lc_treeview.resizeColumnToContents(0)
         self.lc_treeview.resizeColumnToContents(1)
     
-    def _open_hru_details(self):
+    def _sec_landclass(self):
         #load the list of secondary landclasses & populate a list of them
         slc = self.lc_model.findItems('Secondary land classes').pop() #comes back as a list, but we know there is only 1
         
@@ -190,8 +190,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if len(secondary_lc) == 0 or self.basin._num_hrus == 0:
             self.statusBar.showMessage('No secondary landclasses or no HRUs')
             return
+        return secondary_lc    
+
+    def _open_hru_details(self):
+        secondary_lc = self._sec_landclass()
         wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files,self.generated_lc)
         wnd.show()
+
+        
         
     #Generate the HRU
     def _gen_hrus(self):
@@ -423,4 +429,43 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                     self.statusBar.showMessage('No current HRUs')        
                     
     def _save_hru_params(self):
-        return False
+        if self.basin.get_num_hrus() != 0:
+            fname = QFileDialog.getSaveFileName(self, caption="Save Parameters",  filter="CSV Files (*.csv)")  
+            f = open (fname[0], 'w')
+        else:
+            self.statusBar.showMessage('No current HRUs')
+            return
+        
+        nhru = self.basin.get_num_hrus()
+        secondary_lc = self._sec_landclass()
+        f.write(',') #skip a cell so the table looks good and lines up
+        for i in range(0,nhru):
+            f.write('HRU ' + str(i+1) +',')
+        f.write('\n')
+            
+        for i in range(0,len(secondary_lc)):
+            f.write('Mean of ' + secondary_lc[i]+',')            
+            for j in range(0,len(secondary_lc)):
+                    try:
+                        mean = np.mean(self.import_files[secondary_lc[j]].get_raster()[self.basin._hrus._raster   == i+1])
+                    except:
+                        mean = np.mean(self.generated_lc[secondary_lc[j]].get_raster()[self.basin._hrus._raster   == i+1])
+                        
+                    item = '{0:.2f}'.format(mean)
+                    f.write(item+',')   
+            f.write('\n')  
+        
+        f.write('\n')    
+            
+        f.write('Area (m^2),')
+        #calculate the area of each HRU
+        for i in range(0,nhru):
+            total = (self.basin._hrus._raster  == i+1).sum()
+            total = total * abs(self.basin._hrus.get_resolution()[0]*self.basin._hrus.get_resolution()[1]) / 10**6 # to km^2
+                
+            item = '{0:.2f}'.format(total)
+            f.write(item+',')
+   
+
+        f.write('\n')    
+        f.close()

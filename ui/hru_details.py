@@ -21,6 +21,7 @@ class HRUDetails(QtGui.QMainWindow):
         self.window.setWindowTitle('HRU details - CRHM Tools')
         #setup menubar
         self.window.actionClose.triggered.connect(self.window.close)
+        
     def show(self):
         #setup the grid
         nhru = self.basin.get_num_hrus()
@@ -43,9 +44,9 @@ class HRUDetails(QtGui.QMainWindow):
         for i in range(0,nhru):
             for j in range(0,len(self.slc)):
                 try:
-                    mean = np.mean(self.imported_files[self.slc[j]].get_raster()[self.basin._hrus  == i+1])
+                    mean = np.mean(self.imported_files[self.slc[j]].get_raster()[self.basin._hrus._raster  == i+1])
                 except:
-                    mean = np.mean(self.generated_files[self.slc[j]].get_raster()[self.basin._hrus  == i+1])
+                    mean = np.mean(self.generated_files[self.slc[j]].get_raster()[self.basin._hrus._raster  == i+1])
                     
                 item = QtGui.QTableWidgetItem('{0:.2f}'.format(mean))
                 self.window.tableWidget.setItem(j,i,item) #intentional i,j flip here
