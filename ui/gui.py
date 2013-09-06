@@ -423,8 +423,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             
     def _save_hru_to_vector(self):
         if self.basin.get_num_hrus() != 0:
+            try:
                     fname = QFileDialog.getSaveFileName(self, caption="Save Vector",  filter="Vector Files (*.shp)")            
                     self.basin._hrus.save_to_vector(fname[0])  
+            except IOError as e:
+                msg = QMessageBox()
+                msg.setText(str(e))
+                msg.exec_()
+                return                
         else:
                     self.statusBar.showMessage('No current HRUs')        
                     

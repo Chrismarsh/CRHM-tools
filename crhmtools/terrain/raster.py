@@ -105,6 +105,10 @@ class raster(object):
         driver = ogr.GetDriverByName('ESRI Shapefile')
         dst_ds = driver.CreateDataSource( fname )
         
+        #file already exists
+        if dst_ds is None:
+            raise IOError('File already exists. Please select another file.')
+        
         dst_layer = dst_ds.CreateLayer('HRUs')
         
         fd = ogr.FieldDefn( 'DN', ogr.OFTInteger )
