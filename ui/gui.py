@@ -193,6 +193,12 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         return secondary_lc    
 
     def _open_hru_details(self):
+        
+        if self.basin.get_num_hrus() == 0:
+            self.statusBar.showMessage('No HRUs')
+            return
+        
+        
         secondary_lc = self._sec_landclass()
         wnd = HRUDetails(self,self.basin,secondary_lc,self.import_files,self.generated_lc)
         wnd.show()
