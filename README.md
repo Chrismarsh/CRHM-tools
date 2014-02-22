@@ -27,7 +27,7 @@ Tested on Win7x64 and OSX 10.7
 Usage
 ==========
 To run: 
-	python main.py
+	```python main.py```
 
 - Import raster files via file menu or right-clicking 'imported files'
 - Create 'primary land classes' via the functions tab
