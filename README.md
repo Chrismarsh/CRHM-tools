@@ -22,7 +22,7 @@ A python distribution such as [Enthought Python](http://www.enthought.com/produc
 
 Tested with x64 and x86 Python. 
 
-Tested on Win7x64 and OSX 10.7
+Tested on Windows (Win7), OSX (10.8, 10.9), Linux (F19, F20).
 
 Usage
 ==========
