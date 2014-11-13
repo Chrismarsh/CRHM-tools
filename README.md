@@ -22,10 +22,13 @@ A python distribution such as [Enthought Python](http://www.enthought.com/produc
 
 Tested with x64 and x86 Python. 
 
-Tested on Win7x64 and OSX 10.7
+Tested on Windows (Win7), OSX (10.8, 10.9), Linux (F19, F20).
 
 Usage
 ==========
+To run: 
+	```python main.py```
+
 - Import raster files via file menu or right-clicking 'imported files'
 - Create 'primary land classes' via the functions tab
 	- Primary land classes are used to create the final HRUs
