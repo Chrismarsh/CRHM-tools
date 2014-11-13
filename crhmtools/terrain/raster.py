@@ -53,6 +53,7 @@ class raster(object):
         self._xsize = gdalr.RasterXSize
         self._ysize = gdalr.RasterYSize
         geotransform = gdalr.GetGeoTransform()
+        self._geotransform = geotransform
         self._resolution = [geotransform[1],geotransform[5]]
     
     def get_no_data(self):
@@ -87,8 +88,8 @@ class raster(object):
           
         driver = gdal.GetDriverByName('GTiff')
  
-        ds = driver.Create(fname, self.xsize() , self.ysize() , 1, GDT_Float32)
-
+        ds = driver.Create(fname, self.xsize(), self.ysize(), 1, GDT_Float32)
+        ds.SetGeoTransform(self._geotransform)
         band = ds.GetRasterBand(1)
         band.WriteArray(self._raster, 0, 0)
 
